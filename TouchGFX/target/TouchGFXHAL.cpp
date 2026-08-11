@@ -21,9 +21,10 @@
 /* USER CODE END Header */
 
 #include <TouchGFXHAL.hpp>
-
+#include "Keypadcontroller.hpp"
 /* USER CODE BEGIN TouchGFXHAL.cpp */
 
+static KeypadController keypad;
 using namespace touchgfx;
 
 void TouchGFXHAL::initialize()
@@ -35,6 +36,7 @@ void TouchGFXHAL::initialize()
     // Please note, HAL::initialize() must be called to initialize the framework.
 
     TouchGFXGeneratedHAL::initialize();
+    setButtonController(&keypad);
 }
 
 /**
