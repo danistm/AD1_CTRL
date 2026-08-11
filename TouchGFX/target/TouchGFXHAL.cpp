@@ -21,8 +21,9 @@
 /* USER CODE END Header */
 
 #include <TouchGFXHAL.hpp>
-#include "Keypadcontroller.hpp"
+
 /* USER CODE BEGIN TouchGFXHAL.cpp */
+#include "Keypadcontroller.hpp"
 
 static KeypadController keypad;
 using namespace touchgfx;

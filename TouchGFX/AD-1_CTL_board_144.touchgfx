@@ -27,6 +27,71 @@
             "Width": 120,
             "Height": 120,
             "RelativeFilename": "clipart3048752_white_120.png"
+          },
+          {
+            "Type": "Box",
+            "Name": "boxDN",
+            "X": 420,
+            "Y": 77,
+            "Width": 30,
+            "Height": 30,
+            "Visible": false,
+            "Color": {
+              "Red": 251,
+              "Green": 255
+            }
+          },
+          {
+            "Type": "Box",
+            "Name": "boxFW",
+            "X": 450,
+            "Y": 47,
+            "Width": 30,
+            "Height": 30,
+            "Visible": false,
+            "Color": {
+              "Red": 255,
+              "Green": 119
+            }
+          },
+          {
+            "Type": "Box",
+            "Name": "boxPR",
+            "X": 392,
+            "Y": 47,
+            "Width": 30,
+            "Height": 30,
+            "Visible": false,
+            "Color": {
+              "Green": 153,
+              "Blue": 255
+            }
+          },
+          {
+            "Type": "Box",
+            "Name": "boxUP",
+            "X": 420,
+            "Y": 17,
+            "Width": 30,
+            "Height": 30,
+            "Visible": false,
+            "Color": {
+              "Red": 255,
+              "Blue": 102
+            }
+          },
+          {
+            "Type": "Box",
+            "Name": "boxOK",
+            "X": 420,
+            "Y": 47,
+            "Width": 30,
+            "Height": 30,
+            "Visible": false,
+            "Color": {
+              "Green": 255,
+              "Blue": 145
+            }
           }
         ],
         "Interactions": []

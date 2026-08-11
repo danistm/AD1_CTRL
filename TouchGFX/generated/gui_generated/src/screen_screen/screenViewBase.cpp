@@ -21,6 +21,31 @@ screenViewBase::screenViewBase()
     image1.setXY(69, 2);
     image1.setBitmap(touchgfx::Bitmap(BITMAP_CLIPART3048752_WHITE_120_ID));
     add(image1);
+
+    boxDN.setPosition(420, 77, 30, 30);
+    boxDN.setColor(touchgfx::Color::getColorFromRGB(251, 255, 0));
+    boxDN.setVisible(false);
+    add(boxDN);
+
+    boxFW.setPosition(450, 47, 30, 30);
+    boxFW.setColor(touchgfx::Color::getColorFromRGB(255, 119, 0));
+    boxFW.setVisible(false);
+    add(boxFW);
+
+    boxPR.setPosition(392, 47, 30, 30);
+    boxPR.setColor(touchgfx::Color::getColorFromRGB(0, 153, 255));
+    boxPR.setVisible(false);
+    add(boxPR);
+
+    boxUP.setPosition(420, 17, 30, 30);
+    boxUP.setColor(touchgfx::Color::getColorFromRGB(255, 0, 102));
+    boxUP.setVisible(false);
+    add(boxUP);
+
+    boxOK.setPosition(420, 47, 30, 30);
+    boxOK.setColor(touchgfx::Color::getColorFromRGB(0, 255, 145));
+    boxOK.setVisible(false);
+    add(boxOK);
 }
 
 screenViewBase::~screenViewBase()

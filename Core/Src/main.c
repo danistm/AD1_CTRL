@@ -199,6 +199,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   LCD_BringUpTest();
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 4000);
 
 
   /* USER CODE END 2 */

@@ -29,6 +29,11 @@ protected:
     touchgfx::Box __background;
     touchgfx::TextArea textArea1;
     touchgfx::Image image1;
+    touchgfx::Box boxDN;
+    touchgfx::Box boxFW;
+    touchgfx::Box boxPR;
+    touchgfx::Box boxUP;
+    touchgfx::Box boxOK;
 
 private:
 

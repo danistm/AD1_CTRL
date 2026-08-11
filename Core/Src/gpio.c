@@ -89,23 +89,23 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : FW_BTN_Pin PR_BTN_Pin XMOS_RDY_Pin */
-  GPIO_InitStruct.Pin = FW_BTN_Pin|PR_BTN_Pin|XMOS_RDY_Pin;
+  /*Configure GPIO pins : OK_BTN_Pin DN_BTN_Pin XMOS_RDY_Pin */
+  GPIO_InitStruct.Pin = OK_BTN_Pin|DN_BTN_Pin|XMOS_RDY_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : DN_BTN_Pin UP_BTN_Pin CPLD_LOCK_Pin */
-  GPIO_InitStruct.Pin = DN_BTN_Pin|UP_BTN_Pin|CPLD_LOCK_Pin;
+  /*Configure GPIO pins : PR_BTN_Pin FW_BTN_Pin CPLD_LOCK_Pin */
+  GPIO_InitStruct.Pin = PR_BTN_Pin|FW_BTN_Pin|CPLD_LOCK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : OK_BTN_Pin */
-  GPIO_InitStruct.Pin = OK_BTN_Pin;
+  /*Configure GPIO pin : UP_BTN_Pin */
+  GPIO_InitStruct.Pin = UP_BTN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(OK_BTN_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(UP_BTN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : CPLD_RST_Pin CPLD_MUTE_Pin */
   GPIO_InitStruct.Pin = CPLD_RST_Pin|CPLD_MUTE_Pin;
