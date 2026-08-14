@@ -12,7 +12,6 @@ enum LANGUAGES
 
 enum TEXTS
 {
-    T___SINGLEUSE_RF0O,
     NUMBER_OF_TEXT_KEYS
 };
 

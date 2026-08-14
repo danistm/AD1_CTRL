@@ -2,96 +2,20 @@
   "Application": {
     "Screens": [
       {
-        "Name": "screen",
+        "Name": "main",
         "Components": [
           {
-            "Type": "TextArea",
-            "Name": "textArea1",
-            "X": 240,
-            "Y": 20,
-            "Width": 152,
-            "Height": 84,
-            "TextId": "__SingleUse_RF0O",
-            "TextRotation": "0",
-            "Color": {
-              "Red": 255,
-              "Green": 255,
-              "Blue": 255
-            }
+            "Type": "Box",
+            "Name": "box1",
+            "Width": 480,
+            "Height": 128
           },
           {
             "Type": "Image",
-            "Name": "image1",
-            "X": 69,
-            "Y": 2,
-            "Width": 120,
-            "Height": 120,
-            "RelativeFilename": "clipart3048752_white_120.png"
-          },
-          {
-            "Type": "Box",
-            "Name": "boxDN",
-            "X": 420,
-            "Y": 77,
-            "Width": 30,
-            "Height": 30,
-            "Visible": false,
-            "Color": {
-              "Red": 251,
-              "Green": 255
-            }
-          },
-          {
-            "Type": "Box",
-            "Name": "boxFW",
-            "X": 450,
-            "Y": 47,
-            "Width": 30,
-            "Height": 30,
-            "Visible": false,
-            "Color": {
-              "Red": 255,
-              "Green": 119
-            }
-          },
-          {
-            "Type": "Box",
-            "Name": "boxPR",
-            "X": 392,
-            "Y": 47,
-            "Width": 30,
-            "Height": 30,
-            "Visible": false,
-            "Color": {
-              "Green": 153,
-              "Blue": 255
-            }
-          },
-          {
-            "Type": "Box",
-            "Name": "boxUP",
-            "X": 420,
-            "Y": 17,
-            "Width": 30,
-            "Height": 30,
-            "Visible": false,
-            "Color": {
-              "Red": 255,
-              "Blue": 102
-            }
-          },
-          {
-            "Type": "Box",
-            "Name": "boxOK",
-            "X": 420,
-            "Y": 47,
-            "Width": 30,
-            "Height": 30,
-            "Visible": false,
-            "Color": {
-              "Green": 255,
-              "Blue": 145
-            }
+            "Name": "backgroundImg",
+            "Width": 292,
+            "Height": 128,
+            "RelativeFilename": "meter_background_4ch.png"
           }
         ],
         "Interactions": []
@@ -104,7 +28,7 @@
       "Height": 128
     },
     "SelectedColorDepth": 16,
-    "StartupScreenName": "screen",
+    "StartupScreenName": "main",
     "SelectedStartupLanguage": "GB",
     "TouchGfxPath": "../Middlewares/ST/touchgfx",
     "UIPath": ".",

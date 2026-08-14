@@ -4,11 +4,7 @@
 
 FONT_TABLE_LOCATION_FLASH_PRAGMA
 KEEP extern const touchgfx::GlyphNode glyphs_EuropaOutline_65_4bpp[] FONT_TABLE_LOCATION_FLASH_ATTRIBUTE = {
-    {     0, 0x002D,  18,  11,  23,   0,  21,   0,   0, 0x00 }, // hyphen
-    {    99, 0x0031,  26,  44,  44,   1,  33,   0,   0, 0x00 }, // one
-    {   671, 0x003F,  31,  44,  44,   0,  34,   0,   0, 0x00 }, // question
-    {  1375, 0x0041,  45,  44,  44,   0,  46,   0,   0, 0x00 }, // A
-    {  2387, 0x0044,  40,  44,  44,   0,  44,   0,   0, 0x00 }  // D
+    {     0, 0x003F,  31,  44,  44,   0,  34,   0,   0, 0x00 } // question
 };
 
 // EuropaOutline_65_4bpp
@@ -26,6 +22,6 @@ touchgfx::GeneratedFont& getFont_EuropaOutline_65_4bpp();
 
 touchgfx::GeneratedFont& getFont_EuropaOutline_65_4bpp()
 {
-    static touchgfx::GeneratedFont EuropaOutline_65_4bpp(glyphs_EuropaOutline_65_4bpp, 5, 65, 65, 0, 0, 4, 1, 0, 0, unicodes_EuropaOutline_65_4bpp, kerning_EuropaOutline_65_4bpp, 63, 0, 0, 0);
+    static touchgfx::GeneratedFont EuropaOutline_65_4bpp(glyphs_EuropaOutline_65_4bpp, 1, 65, 65, 0, 0, 4, 1, 0, 0, unicodes_EuropaOutline_65_4bpp, kerning_EuropaOutline_65_4bpp, 63, 0, 0, 0);
     return EuropaOutline_65_4bpp;
 }
