@@ -3,6 +3,7 @@
 #include "Keypadcontroller.hpp"
 #include <BitmapDatabase.hpp>
 #include "board_leds.h"
+#include <texts/TextKeysAndLanguages.hpp>
 
 #define METER_TEST_AUTOSWEEP 1
 
@@ -13,15 +14,31 @@ mainView::mainView()
 
 }
 
+void mainView::setTopStatus(TopStatus s, const char* errText)
+{
+    topStatus = s;
+    imgStream.setVisible(s == TOP_STREAMING);
+    txtError.setVisible(s == TOP_ERROR);
+    if (s == TOP_ERROR && errText)
+    {
+        Unicode::strncpy(txtErrorBuffer, errText, TXTERROR_SIZE);
+        txtError.invalidate();
+    }
+    imgStream.invalidate();
+    txtError.invalidate();
+}
+
 void mainView::setupScreen()
 {
     mainViewBase::setupScreen();
     for (int i = 0; i < 4; i++)
-    	{
-            add(meters[i]);
-            meters[i].setChannelIndex(i);
-        }
-        applyMeterMode(false);            /* start in 4-channel mode        */
+    {
+    	add(meters[i]);
+    	meters[i].setChannelIndex(i);
+    }
+    applyMeterMode(false);            /* start in 4-channel mode        */
+    setTopStatus(TOP_STREAMING);        /* evaluation default            */
+    imgUsb.setVisible(true);            /* evaluation default            */
 }
 
 void mainView::tearDownScreen()
@@ -50,6 +67,7 @@ void mainView::applyMeterMode(bool stereo)
             Board_SetClipLed(i, false);			  /* reset clip LEDs on mode change */
         }
     }
+    img2ch.setVisible(stereo);          /* amber circles = 2 bars shown  */
     invalidate();
 }
 
@@ -91,6 +109,12 @@ void mainView::handleKeyEvent(uint8_t key)
 		{
 			meters[i].clearClipLatch();
 		}
+		break;
+
+	case Keys::Right:						/* Test! Toggle error display */
+		errorTest = !errorTest;
+		if (errorTest) setTopStatus(TOP_ERROR, "ADC err");
+		else setTopStatus(TOP_STREAMING);
 		break;
 
 	default:

@@ -9,6 +9,8 @@
 #include <gui/main_screen/mainPresenter.hpp>
 #include <touchgfx/widgets/Box.hpp>
 #include <touchgfx/widgets/Image.hpp>
+#include <touchgfx/widgets/TextAreaWithWildcard.hpp>
+#include <touchgfx/widgets/TextArea.hpp>
 
 class mainViewBase : public touchgfx::View<mainPresenter>
 {
@@ -28,6 +30,21 @@ protected:
     touchgfx::Box __background;
     touchgfx::Box box1;
     touchgfx::Image backgroundImg;
+    touchgfx::Image img2ch;
+    touchgfx::Image imgStream;
+    touchgfx::Image imgUsb;
+    touchgfx::TextAreaWithOneWildcard txtError;
+    touchgfx::TextAreaWithOneWildcard txtRate;
+    touchgfx::TextArea txtUnit;
+    touchgfx::TextArea txtBits;
+
+    /*
+     * Wildcard Buffers
+     */
+    static const uint16_t TXTERROR_SIZE = 12;
+    touchgfx::Unicode::UnicodeChar txtErrorBuffer[TXTERROR_SIZE];
+    static const uint16_t TXTRATE_SIZE = 4;
+    touchgfx::Unicode::UnicodeChar txtRateBuffer[TXTRATE_SIZE];
 
 private:
 

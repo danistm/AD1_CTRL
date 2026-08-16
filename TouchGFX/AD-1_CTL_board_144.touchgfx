@@ -16,6 +16,106 @@
             "Width": 292,
             "Height": 128,
             "RelativeFilename": "meter_background_4ch.png"
+          },
+          {
+            "Type": "Image",
+            "Name": "img2ch",
+            "X": 296,
+            "Y": 2,
+            "Width": 34,
+            "Height": 22,
+            "Visible": false,
+            "RelativeFilename": "icon_2ch_circles.png"
+          },
+          {
+            "Type": "Image",
+            "Name": "imgStream",
+            "X": 348,
+            "Y": 2,
+            "Width": 76,
+            "Height": 20,
+            "RelativeFilename": "icon_stream_A.png"
+          },
+          {
+            "Type": "Image",
+            "Name": "imgUsb",
+            "X": 440,
+            "Y": 2,
+            "Width": 36,
+            "Height": 20,
+            "RelativeFilename": "icon_usb.png"
+          },
+          {
+            "Type": "TextArea",
+            "Name": "txtError",
+            "X": 330,
+            "Y": 4,
+            "Width": 115,
+            "Height": 18,
+            "Visible": false,
+            "TextId": "__SingleUse_Z3HU",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 255,
+              "Green": 40,
+              "Blue": 40
+            },
+            "Wildcard1": {
+              "TextId": "__SingleUse_RXG7",
+              "UseBuffer": true,
+              "BufferSize": 12
+            }
+          },
+          {
+            "Type": "TextArea",
+            "Name": "txtRate",
+            "X": 300,
+            "Y": 36,
+            "Width": 110,
+            "Height": 50,
+            "TextId": "__SingleUse_DA27",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 90,
+              "Green": 170,
+              "Blue": 255
+            },
+            "Wildcard1": {
+              "TextId": "__SingleUse_U60D",
+              "UseBuffer": true,
+              "BufferSize": 4
+            }
+          },
+          {
+            "Type": "TextArea",
+            "Name": "txtUnit",
+            "X": 414,
+            "Y": 62,
+            "Width": 38,
+            "Height": 20,
+            "TextId": "__SingleUse_9590",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 90,
+              "Green": 170,
+              "Blue": 255
+            },
+            "AutoSize": true
+          },
+          {
+            "Type": "TextArea",
+            "Name": "txtBits",
+            "X": 352,
+            "Y": 94,
+            "Width": 70,
+            "Height": 20,
+            "TextId": "__SingleUse_U69B",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 90,
+              "Green": 170,
+              "Blue": 255
+            }
           }
         ],
         "Interactions": []

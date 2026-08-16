@@ -4,6 +4,7 @@
 #include <gui_generated/main_screen/mainViewBase.hpp>
 #include <touchgfx/Color.hpp>
 #include <images/BitmapDatabase.hpp>
+#include <texts/TextKeysAndLanguages.hpp>
 
 mainViewBase::mainViewBase()
 {
@@ -18,6 +19,48 @@ mainViewBase::mainViewBase()
     backgroundImg.setXY(0, 0);
     backgroundImg.setBitmap(touchgfx::Bitmap(BITMAP_METER_BACKGROUND_4CH_ID));
     add(backgroundImg);
+
+    img2ch.setXY(296, 2);
+    img2ch.setBitmap(touchgfx::Bitmap(BITMAP_ICON_2CH_CIRCLES_ID));
+    img2ch.setVisible(false);
+    add(img2ch);
+
+    imgStream.setXY(348, 2);
+    imgStream.setBitmap(touchgfx::Bitmap(BITMAP_ICON_STREAM_A_ID));
+    add(imgStream);
+
+    imgUsb.setXY(440, 2);
+    imgUsb.setBitmap(touchgfx::Bitmap(BITMAP_ICON_USB_ID));
+    add(imgUsb);
+
+    txtError.setPosition(330, 4, 115, 18);
+    txtError.setColor(touchgfx::Color::getColorFromRGB(255, 40, 40));
+    txtError.setLinespacing(0);
+    Unicode::snprintf(txtErrorBuffer, TXTERROR_SIZE, "%s", touchgfx::TypedText(T___SINGLEUSE_RXG7).getText());
+    txtError.setWildcard(txtErrorBuffer);
+    txtError.setTypedText(touchgfx::TypedText(T___SINGLEUSE_Z3HU));
+    txtError.setVisible(false);
+    add(txtError);
+
+    txtRate.setPosition(300, 36, 110, 50);
+    txtRate.setColor(touchgfx::Color::getColorFromRGB(90, 170, 255));
+    txtRate.setLinespacing(0);
+    Unicode::snprintf(txtRateBuffer, TXTRATE_SIZE, "%s", touchgfx::TypedText(T___SINGLEUSE_U60D).getText());
+    txtRate.setWildcard(txtRateBuffer);
+    txtRate.setTypedText(touchgfx::TypedText(T___SINGLEUSE_DA27));
+    add(txtRate);
+
+    txtUnit.setXY(414, 62);
+    txtUnit.setColor(touchgfx::Color::getColorFromRGB(90, 170, 255));
+    txtUnit.setLinespacing(0);
+    txtUnit.setTypedText(touchgfx::TypedText(T___SINGLEUSE_9590));
+    add(txtUnit);
+
+    txtBits.setPosition(352, 94, 70, 20);
+    txtBits.setColor(touchgfx::Color::getColorFromRGB(90, 170, 255));
+    txtBits.setLinespacing(0);
+    txtBits.setTypedText(touchgfx::TypedText(T___SINGLEUSE_U69B));
+    add(txtBits);
 }
 
 mainViewBase::~mainViewBase()

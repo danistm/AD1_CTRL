@@ -5,12 +5,33 @@
   </Languages>
   <Texts>
     <TextGroup Id="Group1" />
-    <TextGroup Id="Unsorted" />
+    <TextGroup Id="Unsorted">
+      <Text Id="__SingleUse_U69B" Alignment="Center" TypographyId="Default">
+        <Translation Language="GB">24 bit</Translation>
+      </Text>
+      <Text Id="__SingleUse_9590" Alignment="Right" TypographyId="Default">
+        <Translation Language="GB">kHz</Translation>
+      </Text>
+      <Text Id="__SingleUse_U60D" Alignment="Left" TypographyId="Default">
+        <Translation Language="GB">192</Translation>
+      </Text>
+      <Text Id="__SingleUse_DA27" Alignment="Right" TypographyId="RATE_46">
+        <Translation Language="GB">&lt;value&gt;</Translation>
+      </Text>
+      <Text Id="__SingleUse_RXG7" Alignment="Left" TypographyId="Default">
+        <Translation Language="GB">ADC err</Translation>
+      </Text>
+      <Text Id="__SingleUse_Z3HU" Alignment="Center" TypographyId="ERROR_14">
+        <Translation Language="GB">&lt;value&gt;</Translation>
+      </Text>
+    </TextGroup>
   </Texts>
   <Typographies>
     <Typography Id="Default" Font="verdana.ttf" Size="20" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" />
     <Typography Id="Large" Font="verdana.ttf" Size="40" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" />
     <Typography Id="Small" Font="verdana.ttf" Size="10" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" />
     <Typography Id="Device" Font="EuropaOutline.ttf" Size="65" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" />
+    <Typography Id="ERROR_14" Font="verdana.ttf" Size="14" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WildcardCharacters="ADCPLXMOSIcer " />
+    <Typography Id="RATE_46" Font="verdanab.ttf" Size="46" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WildcardCharacters="124689" />
   </Typographies>
 </TextDatabase>
