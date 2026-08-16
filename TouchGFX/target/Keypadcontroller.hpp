@@ -24,7 +24,8 @@ namespace Keys
 		Down	= 2,
 		Left	= 3,
 		Right	= 4,
-		Ok		= 13
+		Ok		= 13,
+		OkLong	= 14
 	};
 }
 
@@ -38,6 +39,8 @@ private:
 	uint8_t		prevMask;	/* pressed-state bitmask of previous frame 	*/
 	int8_t		heldIndex;	/* index of key held for auto-repeat, -1=no */
 	uint16_t	heldTicks;	/* frames the key has been held				*/
+	uint16_t	okTicks;	/* frames OK has been held                  */
+	bool		okLongSent;	/* OkLong already emitted for this hold     */
 };
 
 #endif /* TARGET_KEYPADCONTROLLER_HPP_ */

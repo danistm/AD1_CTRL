@@ -42,6 +42,7 @@ public:
     void tick();                   /* once per frame                    */
     void clearClipLatch();
     bool isClipLatched() const { return clipLatched; }
+    void setChannelIndex(int8_t ch) { chIndex = ch; }
 
 private:
     static int16_t dbToPx(float db);
@@ -59,10 +60,8 @@ private:
     bool     clipLatched;
     int16_t  lastLevelPx;
     int16_t  lastPeakPx;
+    int8_t 	 chIndex;
 };
-
-
-
 
 
 #endif /* GUI_INCLUDE_GUI_COMMON_CHANNELMETER_HPP_ */

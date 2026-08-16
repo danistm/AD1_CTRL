@@ -2,6 +2,7 @@
 #include <cmath>
 #include "Keypadcontroller.hpp"
 #include <BitmapDatabase.hpp>
+#include "board_leds.h"
 
 #define METER_TEST_AUTOSWEEP 1
 
@@ -18,6 +19,7 @@ void mainView::setupScreen()
     for (int i = 0; i < 4; i++)
     	{
             add(meters[i]);
+            meters[i].setChannelIndex(i);
         }
         applyMeterMode(false);            /* start in 4-channel mode        */
 }
@@ -45,6 +47,7 @@ void mainView::applyMeterMode(bool stereo)
         {
             meters[i].setup(stereo);              /* picks 22/46 bitmaps */
             meters[i].setXY(0, stereo ? rows2[i] : rows4[i]);
+            Board_SetClipLed(i, false);			  /* reset clip LEDs on mode change */
         }
     }
     invalidate();

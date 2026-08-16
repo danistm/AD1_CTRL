@@ -12,6 +12,7 @@
 #include <gui/common/ChannelMeter.hpp>
 #include <touchgfx/Color.hpp>
 #include <BitmapDatabase.hpp>
+#include "board_leds.h"
 
 /* --- ballistics constants, frames at ~57 fps --- */
 static const float    FLOOR_DB         = -60.0f;
@@ -112,6 +113,7 @@ void ChannelMeter::tick()
         clipLatched = true;
         clipBox.setColor(touchgfx::Color::getColorFromRGB(255, 0, 0));
         clipBox.invalidate();
+        if (chIndex >= 0) Board_SetClipLed(chIndex, true);
     }
 
     /* --- push to widgets only when pixels changed --- */
@@ -144,5 +146,6 @@ void ChannelMeter::clearClipLatch()
         clipLatched = false;
         clipBox.setColor(touchgfx::Color::getColorFromRGB(30, 30, 30));
         clipBox.invalidate();
+        if (chIndex >= 0) Board_SetClipLed(chIndex, false);
     }
 }

@@ -29,15 +29,21 @@ static const KeyPin keyMap[5] =
     { OK_BTN_GPIO_Port, OK_BTN_Pin, Keys::Ok,    false },
 };
 
+static const uint8_t OK_INDEX	= 4;
+static const uint8_t OK_BIT		= (1u << OK_INDEX);
+
 /* Auto-repeat timing in frames (~17.5 ms each at 57 Hz)                */
-static const uint16_t REPEAT_DELAY = 28;  /* ~0.5 s before repeating    */
-static const uint16_t REPEAT_RATE  = 6;   /* ~10 events/s while held    */
+static const uint16_t REPEAT_DELAY 			= 28;	/* ~0.5 s before repeating    */
+static const uint16_t REPEAT_RATE  			= 6;	/* ~10 events/s while held    */
+static const uint16_t LONG_PRESS_TICKS		= 57;	/* ~1.0 s                	  */
 
 void KeypadController::init()
 {
-    prevMask  = 0;
-    heldIndex = -1;
-    heldTicks = 0;
+    prevMask	= 0;
+    heldIndex	= -1;
+    heldTicks	= 0;
+    okTicks		= 0;
+    okLongSent	= false;
 }
 
 bool KeypadController::sample(uint8_t& key)
@@ -52,17 +58,44 @@ bool KeypadController::sample(uint8_t& key)
         }
     }
 
-    const uint8_t newPress = (uint8_t)(mask & ~prevMask);
+    const uint8_t newPress   = (uint8_t)(mask & ~prevMask);
+    const uint8_t newRelease = (uint8_t)(prevMask & ~mask);
     prevMask = mask;
 
-    /* New press: report it, arm auto-repeat if applicable */
-    if (newPress != 0)
+    /* ---------- OK: short/long discrimination ---------- */
+    if (newPress & OK_BIT)
     {
-        for (int i = 0; i < 5; i++)
+        okTicks    = 0;
+        okLongSent = false;
+    }
+    if (mask & OK_BIT)
+    {
+        okTicks++;
+        if (!okLongSent && okTicks >= LONG_PRESS_TICKS)
         {
-            if (newPress & (1u << i))
+            okLongSent = true;
+            key = Keys::OkLong;
+            return true;
+        }
+    }
+    if (newRelease & OK_BIT)
+    {
+        if (!okLongSent && okTicks < LONG_PRESS_TICKS)
+        {
+            key = Keys::Ok;
+            return true;
+        }
+    }
+
+    /* ---------- Arrows: press edge + auto-repeat ---------- */
+    const uint8_t arrowPress = (uint8_t)(newPress & ~OK_BIT);
+    if (arrowPress != 0)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (arrowPress & (1u << i))
             {
-                heldIndex = keyMap[i].autorepeat ? (int8_t)i : (int8_t)-1;
+                heldIndex = (int8_t)i;
                 heldTicks = 0;
                 key = keyMap[i].code;
                 return true;
@@ -73,7 +106,7 @@ bool KeypadController::sample(uint8_t& key)
     /* Auto-repeat while the armed key stays down (and only that key)   */
     if (heldIndex >= 0)
     {
-        if (mask == (uint8_t)(1u << heldIndex))
+        if ((mask & ~OK_BIT) == (uint8_t)(1u << heldIndex))
         {
             heldTicks++;
             if (heldTicks >= REPEAT_DELAY &&
