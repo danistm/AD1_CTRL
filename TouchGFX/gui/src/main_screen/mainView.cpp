@@ -4,6 +4,7 @@
 #include <BitmapDatabase.hpp>
 #include "board_leds.h"
 #include <texts/TextKeysAndLanguages.hpp>
+#include "sai_metering.h"
 
 #define METER_TEST_AUTOSWEEP 1
 
@@ -73,7 +74,8 @@ void mainView::applyMeterMode(bool stereo)
 
 void mainView::handleTickEvent()
 {
-#if METER_TEST_AUTOSWEEP
+#if 0
+	#if METER_TEST_AUTOSWEEP
     static uint32_t t = 0;
     t++;
     g_testDb[0] = -30.0f + 30.0f * sinf(t * 0.045f);        /* full swing */
@@ -85,11 +87,15 @@ void mainView::handleTickEvent()
                                                                latch)    */
     g_testDb[3] = -18.0f;                                   /* static     */
 #endif
+#endif
 
+    float db[4];
+    SAI_Metering_GetPeaksDb(db);
+    SAI_Metering_Service();
     const int n = stereoMode ? 2 : 4;
     for (int i = 0; i < n; i++)
     {
-        meters[i].setInputDb(g_testDb[i]);
+        meters[i].setInputDb(db[i]);
         meters[i].tick();
     }
 

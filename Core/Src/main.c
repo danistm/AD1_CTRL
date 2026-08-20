@@ -31,6 +31,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "sai_metering.h"
 //#define LCD_W  480
 //#define LCD_H  128   /* ST7282 vertical display period = 272 lines     */
 
@@ -197,6 +198,8 @@ int main(void)
   MX_CRC_Init();
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
+
+  SAI_Metering_Start();
 
   LCD_BringUpTest();
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);

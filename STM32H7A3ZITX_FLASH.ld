@@ -166,6 +166,14 @@ SECTIONS
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >RAM
+  
+  /* Buffers for SAI data receive */
+  .sai_buffers (NOLOAD) :
+  {
+  	. = ALIGN(32);
+  	*(.sai_buffers)
+  } >RAM_CD
+  
 
   /* Remove information from the standard libraries */
   /DISCARD/ :
