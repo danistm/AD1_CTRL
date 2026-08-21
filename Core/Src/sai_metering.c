@@ -97,6 +97,16 @@ static void restart_capture(void)
     /* DMAStop is safe in READY or BUSY; brings both blocks to READY     */
     (void)HAL_SAI_DMAStop(&hsai_BlockA1);
     (void)HAL_SAI_DMAStop(&hsai_BlockB1);
+
+    /* Wipe stale audio and pending peaks: after a clock loss, noise on
+     * floating inputs can complete a DMA half over a buffer that still
+     * holds old samples — which would re-inject the last level.         */
+    memset((void*)bufA, 0, sizeof(bufA));
+    memset((void*)bufB, 0, sizeof(bufB));
+    __disable_irq();
+    for (int i = 0; i < 4; i++) peakAbs[i] = 0u;
+    __enable_irq();
+
     (void)HAL_SAI_Receive_DMA(&hsai_BlockA1, (uint8_t*)bufA, BUF_WORDS);
     (void)HAL_SAI_Receive_DMA(&hsai_BlockB1, (uint8_t*)bufB, BUF_WORDS);
 }
