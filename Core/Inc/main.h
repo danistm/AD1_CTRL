@@ -103,10 +103,8 @@ void Error_Handler(void);
 #define CPLD_LOCK_GPIO_Port GPIOC
 #define ADC_EN_Pin GPIO_PIN_0
 #define ADC_EN_GPIO_Port GPIOD
-#define DIAG_USART2_TX_Pin GPIO_PIN_5
-#define DIAG_USART2_TX_GPIO_Port GPIOD
-#define DIAG_USART2_RX_Pin GPIO_PIN_6
-#define DIAG_USART2_RX_GPIO_Port GPIOD
+#define ADC_CLIP_Pin GPIO_PIN_5
+#define ADC_CLIP_GPIO_Port GPIOD
 #define XMOS_2CH_Pin GPIO_PIN_12
 #define XMOS_2CH_GPIO_Port GPIOG
 #define XMOS_RDY_Pin GPIO_PIN_13

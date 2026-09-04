@@ -25,13 +25,13 @@
 #include "ltdc.h"
 #include "sai.h"
 #include "tim.h"
-#include "usart.h"
 #include "gpio.h"
 #include "app_touchgfx.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "sai_metering.h"
+#include "adc_es9843.h"
 //#define LCD_W  480
 //#define LCD_H  128   /* ST7282 vertical display period = 272 lines     */
 
@@ -193,7 +193,6 @@ int main(void)
   MX_LTDC_Init();
   MX_SAI1_Init();
   MX_TIM3_Init();
-  MX_USART2_UART_Init();
   MX_I2C4_Init();
   MX_CRC_Init();
   MX_TouchGFX_Init();
@@ -204,6 +203,8 @@ int main(void)
   LCD_BringUpTest();
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
   __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 4000);
+
+  ES9843_Init();
 
 
   /* USER CODE END 2 */
