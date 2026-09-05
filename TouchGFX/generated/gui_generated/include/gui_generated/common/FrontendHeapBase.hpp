@@ -14,6 +14,8 @@
 
 #include <gui/main_screen/mainView.hpp>
 #include <gui/main_screen/mainPresenter.hpp>
+#include <gui/menu_screen/menuView.hpp>
+#include <gui/menu_screen/menuPresenter.hpp>
 
 
 /**
@@ -37,7 +39,8 @@ public:
      * @note All view types used in the application MUST be added to this list!
      */
     typedef touchgfx::meta::TypeList< mainView,
-            touchgfx::meta::Nil
+            touchgfx::meta::TypeList< menuView,
+            touchgfx::meta::Nil >
             > GeneratedViewTypes;
 
     /**
@@ -50,7 +53,8 @@ public:
      * @note All presenter types used in the application MUST be added to this list!
      */
     typedef touchgfx::meta::TypeList< mainPresenter,
-            touchgfx::meta::Nil
+            touchgfx::meta::TypeList< menuPresenter,
+            touchgfx::meta::Nil >
             > GeneratedPresenterTypes;
 
     /**

@@ -6,6 +6,42 @@
   <Texts>
     <TextGroup Id="Group1" />
     <TextGroup Id="Unsorted">
+      <Text Id="__SingleUse_8T31" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">MIN PHASE</Translation>
+      </Text>
+      <Text Id="__SingleUse_ZQVO" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">&lt;value&gt;</Translation>
+      </Text>
+      <Text Id="__SingleUse_5QK3" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">OFF</Translation>
+      </Text>
+      <Text Id="__SingleUse_SUCI" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">&lt;value&gt;</Translation>
+      </Text>
+      <Text Id="__SingleUse_DC1Z" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">48 kHz</Translation>
+      </Text>
+      <Text Id="__SingleUse_18T5" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">&lt;value&gt;</Translation>
+      </Text>
+      <Text Id="__SingleUse_VIUA" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">EXIT</Translation>
+      </Text>
+      <Text Id="__SingleUse_CCVC" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">DIG. FILTER</Translation>
+      </Text>
+      <Text Id="__SingleUse_EM28" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">DISPLAY BRIGHT.</Translation>
+      </Text>
+      <Text Id="__SingleUse_9D6Q" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">KEY BRIGHT.</Translation>
+      </Text>
+      <Text Id="__SingleUse_WZFN" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">2CH MODE</Translation>
+      </Text>
+      <Text Id="__SingleUse_SFXO" Alignment="Left" TypographyId="MENU_13">
+        <Translation Language="GB">SAMPLE RATE</Translation>
+      </Text>
       <Text Id="__SingleUse_U69B" Alignment="Center" TypographyId="Default">
         <Translation Language="GB">24 bit</Translation>
       </Text>
@@ -33,5 +69,6 @@
     <Typography Id="Device" Font="EuropaOutline.ttf" Size="65" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" />
     <Typography Id="ERROR_14" Font="verdana.ttf" Size="14" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WildcardCharacters="ADCPLXMOSIcer " />
     <Typography Id="RATE_46" Font="verdanab.ttf" Size="46" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WildcardCharacters="124689" />
+    <Typography Id="MENU_13" Font="verdanab.ttf" Size="13" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WildcardCharacters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789. " />
   </Typographies>
 </TextDatabase>

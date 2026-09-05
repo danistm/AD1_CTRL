@@ -11,6 +11,7 @@ extern touchgfx::GeneratedFont& getFont_verdana_10_4bpp();
 extern touchgfx::GeneratedFont& getFont_EuropaOutline_65_4bpp();
 extern touchgfx::GeneratedFont& getFont_verdana_14_4bpp();
 extern touchgfx::GeneratedFont& getFont_verdanab_46_4bpp();
+extern touchgfx::GeneratedFont& getFont_verdanab_13_4bpp();
 
 const touchgfx::Font* touchgfx_fonts[] = {
     &(getFont_verdana_20_4bpp()),
@@ -18,7 +19,8 @@ const touchgfx::Font* touchgfx_fonts[] = {
     &(getFont_verdana_10_4bpp()),
     &(getFont_EuropaOutline_65_4bpp()),
     &(getFont_verdana_14_4bpp()),
-    &(getFont_verdanab_46_4bpp())
+    &(getFont_verdanab_46_4bpp()),
+    &(getFont_verdanab_13_4bpp())
 };
 
 extern const touchgfx::TypedText::TypedTextData typedText_database_DEFAULT[];
@@ -26,6 +28,18 @@ extern const touchgfx::TypedText::TypedTextData* const typedTextDatabaseArray[];
 
 TEXT_LOCATION_FLASH_PRAGMA
 const touchgfx::TypedText::TypedTextData typedText_database_DEFAULT[] TEXT_LOCATION_FLASH_ATTRIBUTE = {
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
+    { 6, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
     { 0, touchgfx::CENTER, touchgfx::TEXT_DIRECTION_LTR },
     { 0, touchgfx::RIGHT, touchgfx::TEXT_DIRECTION_LTR },
     { 0, touchgfx::LEFT, touchgfx::TEXT_DIRECTION_LTR },
@@ -83,6 +97,9 @@ void resetFont(touchgfx::FontId fontId)
         break;
     case 5:
         touchgfx_fonts[5] = &(getFont_verdanab_46_4bpp());
+        break;
+    case 6:
+        touchgfx_fonts[6] = &(getFont_verdanab_13_4bpp());
         break;
     }
 }

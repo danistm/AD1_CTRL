@@ -10,10 +10,22 @@ KEEP extern const uint32_t indicesGb[] TEXT_LOCATION_FLASH_ATTRIBUTE;
 // Remap all strings
 TEXT_LOCATION_FLASH_PRAGMA
 KEEP extern const uint32_t indicesGb[] TEXT_LOCATION_FLASH_ATTRIBUTE = {
-    10, // T___SINGLEUSE_U69B: "24 bit"
-    21, // T___SINGLEUSE_9590: "kHz"
-    17, // T___SINGLEUSE_U60D: "192"
-    0,  // T___SINGLEUSE_DA27: "<>"
-    2,  // T___SINGLEUSE_RXG7: "ADC err"
-    0   // T___SINGLEUSE_Z3HU: "<>"
+    52,  // T___SINGLEUSE_8T31: "MIN PHASE"
+    71,  // T___SINGLEUSE_ZQVO: "<>"
+    104, // T___SINGLEUSE_5QK3: "OFF"
+    71,  // T___SINGLEUSE_SUCI: "<>"
+    88,  // T___SINGLEUSE_DC1Z: "48 kHz"
+    71,  // T___SINGLEUSE_18T5: "<>"
+    95,  // T___SINGLEUSE_VIUA: "EXIT"
+    16,  // T___SINGLEUSE_CCVC: "DIG. FILTER"
+    0,   // T___SINGLEUSE_EM28: "DISPLAY BRIGHT."
+    28,  // T___SINGLEUSE_9D6Q: "KEY BRIGHT."
+    62,  // T___SINGLEUSE_WZFN: "2CH MODE"
+    40,  // T___SINGLEUSE_SFXO: "SAMPLE RATE"
+    81,  // T___SINGLEUSE_U69B: "24 bit"
+    91,  // T___SINGLEUSE_9590: "kHz"
+    100, // T___SINGLEUSE_U60D: "192"
+    71,  // T___SINGLEUSE_DA27: "<>"
+    73,  // T___SINGLEUSE_RXG7: "ADC err"
+    71   // T___SINGLEUSE_Z3HU: "<>"
 };

@@ -1,4 +1,5 @@
 #include <gui/main_screen/mainView.hpp>
+#include <gui/common/menu_settings.h>
 #include <cmath>
 #include "Keypadcontroller.hpp"
 #include <BitmapDatabase.hpp>
@@ -37,7 +38,8 @@ void mainView::setupScreen()
     	add(meters[i]);
     	meters[i].setChannelIndex(i);
     }
-    applyMeterMode(false);            /* start in 4-channel mode        */
+    //applyMeterMode(false);            /* start in 4-channel mode        */
+    applyMeterMode(g_settings.ch2On);
     setTopStatus(TOP_STREAMING);        /* evaluation default            */
     imgUsb.setVisible(true);            /* evaluation default            */
 }
@@ -104,6 +106,9 @@ void mainView::handleTickEvent()
 
 void mainView::handleKeyEvent(uint8_t key)
 {
+
+	mainViewBase::handleKeyEvent(key);
+
 	switch(key)
 	{
 	case Keys::Left:

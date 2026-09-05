@@ -118,7 +118,412 @@
             }
           }
         ],
-        "Interactions": []
+        "Interactions": [
+          {
+            "InteractionName": "menu_open",
+            "Trigger": {
+              "Type": "TriggerPhysicalButtonClicked",
+              "ButtonKey": 14
+            },
+            "Action": {
+              "Type": "ActionGotoScreen",
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "menu"
+            }
+          }
+        ]
+      },
+      {
+        "Name": "menu",
+        "Components": [
+          {
+            "Type": "Box",
+            "Name": "box1",
+            "Width": 480,
+            "Height": 128
+          },
+          {
+            "Type": "Box",
+            "Name": "boxSelRate",
+            "X": 5,
+            "Y": 8,
+            "Width": 105,
+            "Height": 17,
+            "Visible": false,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            }
+          },
+          {
+            "Type": "TextArea",
+            "Name": "lblRate",
+            "X": 8,
+            "Y": 8,
+            "Width": 100,
+            "Height": 15,
+            "TextId": "__SingleUse_SFXO",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "AutoSize": true
+          },
+          {
+            "Type": "Box",
+            "Name": "boxSelCh2",
+            "X": 5,
+            "Y": 38,
+            "Width": 82,
+            "Height": 17,
+            "Visible": false,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            }
+          },
+          {
+            "Type": "TextArea",
+            "Name": "lblCh2",
+            "X": 8,
+            "Y": 38,
+            "Width": 76,
+            "Height": 15,
+            "TextId": "__SingleUse_WZFN",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "AutoSize": true
+          },
+          {
+            "Type": "Box",
+            "Name": "boxSelKeyB",
+            "X": 5,
+            "Y": 68,
+            "Width": 101,
+            "Height": 17,
+            "Visible": false,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            }
+          },
+          {
+            "Type": "TextArea",
+            "Name": "lblKeyB",
+            "X": 8,
+            "Y": 68,
+            "Width": 96,
+            "Height": 15,
+            "TextId": "__SingleUse_9D6Q",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "AutoSize": true
+          },
+          {
+            "Type": "Box",
+            "Name": "boxSelDispB",
+            "X": 5,
+            "Y": 98,
+            "Width": 136,
+            "Height": 17,
+            "Visible": false,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            }
+          },
+          {
+            "Type": "TextArea",
+            "Name": "lblDispB",
+            "X": 8,
+            "Y": 98,
+            "Width": 132,
+            "Height": 15,
+            "TextId": "__SingleUse_EM28",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "AutoSize": true
+          },
+          {
+            "Type": "Box",
+            "Name": "boxSelFilt",
+            "X": 248,
+            "Y": 8,
+            "Width": 94,
+            "Height": 17,
+            "Visible": false,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            }
+          },
+          {
+            "Type": "TextArea",
+            "Name": "lblFilt",
+            "X": 250,
+            "Y": 8,
+            "Width": 89,
+            "Height": 15,
+            "TextId": "__SingleUse_CCVC",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "AutoSize": true
+          },
+          {
+            "Type": "BoxWithBorder",
+            "Name": "boxExitFrame",
+            "X": 421,
+            "Y": 97,
+            "Width": 40,
+            "Height": 19,
+            "BorderColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "BorderSize": 1
+          },
+          {
+            "Type": "Box",
+            "Name": "boxSelExit",
+            "X": 421,
+            "Y": 97,
+            "Width": 39,
+            "Height": 19,
+            "Visible": false,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            }
+          },
+          {
+            "Type": "TextArea",
+            "Name": "lblExit",
+            "X": 424,
+            "Y": 98,
+            "Width": 35,
+            "Height": 15,
+            "TextId": "__SingleUse_VIUA",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "AutoSize": true
+          },
+          {
+            "Type": "Box",
+            "Name": "boxValRate",
+            "X": 148,
+            "Y": 8,
+            "Width": 64,
+            "Height": 17,
+            "Visible": false,
+            "Color": {
+              "Red": 90,
+              "Green": 170,
+              "Blue": 255
+            }
+          },
+          {
+            "Type": "TextArea",
+            "Name": "valRate",
+            "X": 150,
+            "Y": 8,
+            "Width": 64,
+            "Height": 15,
+            "TextId": "__SingleUse_18T5",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 90,
+              "Green": 170,
+              "Blue": 255
+            },
+            "Wildcard1": {
+              "TextId": "__SingleUse_DC1Z",
+              "UseBuffer": true,
+              "BufferSize": 8
+            }
+          },
+          {
+            "Type": "Box",
+            "Name": "boxValCh2",
+            "X": 148,
+            "Y": 38,
+            "Width": 33,
+            "Height": 17,
+            "Visible": false,
+            "Color": {
+              "Red": 255,
+              "Green": 136
+            }
+          },
+          {
+            "Type": "TextArea",
+            "Name": "valCh2",
+            "X": 150,
+            "Y": 38,
+            "Width": 27,
+            "Height": 15,
+            "TextId": "__SingleUse_SUCI",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 255,
+              "Green": 136
+            },
+            "AutoSize": true,
+            "Wildcard1": {
+              "TextId": "__SingleUse_5QK3",
+              "UseBuffer": true,
+              "BufferSize": 4
+            }
+          },
+          {
+            "Type": "Box",
+            "Name": "boxValFilt",
+            "X": 344,
+            "Y": 7,
+            "Width": 132,
+            "Height": 18,
+            "Visible": false,
+            "Color": {
+              "Red": 70,
+              "Green": 255,
+              "Blue": 3
+            }
+          },
+          {
+            "Type": "TextArea",
+            "Name": "valFilt",
+            "X": 347,
+            "Y": 8,
+            "Width": 116,
+            "Height": 15,
+            "TextId": "__SingleUse_ZQVO",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 70,
+              "Green": 255,
+              "Blue": 3
+            },
+            "Wildcard1": {
+              "TextId": "__SingleUse_8T31",
+              "UseBuffer": true,
+              "BufferSize": 12
+            }
+          },
+          {
+            "Type": "Box",
+            "Name": "boxValKeyB",
+            "X": 149,
+            "Y": 65,
+            "Width": 106,
+            "Height": 20,
+            "Visible": false,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            }
+          },
+          {
+            "Type": "BoxProgress",
+            "Name": "barKey",
+            "X": 150,
+            "Y": 66,
+            "Width": 104,
+            "Height": 18,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Direction": "Right",
+            "FileNameBackground": "bar_frame.png",
+            "IndicatorPositionX": 2,
+            "IndicatorPositionY": 2,
+            "IndicatorPositionWidth": 100,
+            "IndicatorPositionHeight": 14,
+            "ProgressRangeMax": 10,
+            "ProgressRangeSteps": 10,
+            "ProgressInitialValue": 10
+          },
+          {
+            "Type": "Box",
+            "Name": "boxValDispB",
+            "X": 149,
+            "Y": 95,
+            "Width": 106,
+            "Height": 20,
+            "Visible": false,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            }
+          },
+          {
+            "Type": "BoxProgress",
+            "Name": "barDisp",
+            "X": 150,
+            "Y": 96,
+            "Width": 104,
+            "Height": 18,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Direction": "Right",
+            "FileNameBackground": "bar_frame.png",
+            "IndicatorPositionX": 2,
+            "IndicatorPositionY": 2,
+            "IndicatorPositionWidth": 100,
+            "IndicatorPositionHeight": 14,
+            "ProgressRangeMax": 10,
+            "ProgressRangeSteps": 10,
+            "ProgressInitialValue": 10
+          }
+        ],
+        "Interactions": [
+          {
+            "InteractionName": "back_to_main",
+            "Trigger": {
+              "Type": "TriggerPhysicalButtonClicked",
+              "ButtonKey": 99
+            },
+            "Action": {
+              "Type": "ActionGotoScreen",
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "main"
+            }
+          }
+        ]
       }
     ],
     "CustomContainerDefinitions": [],

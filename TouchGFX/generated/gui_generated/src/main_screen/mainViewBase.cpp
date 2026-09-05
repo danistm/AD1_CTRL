@@ -72,3 +72,15 @@ void mainViewBase::setupScreen()
 {
 
 }
+
+void mainViewBase::handleKeyEvent(uint8_t key)
+{
+    if(14 == key)
+    {
+        //menu_open
+        //When hardware button 14 clicked change screen to menu
+        //Go to menu with no screen transition
+        application().gotomenuScreenNoTransition();
+    
+    }
+}

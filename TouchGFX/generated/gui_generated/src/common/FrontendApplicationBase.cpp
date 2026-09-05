@@ -10,6 +10,8 @@
 #include <touchgfx/hal/HAL.hpp>
 #include <gui/main_screen/mainView.hpp>
 #include <gui/main_screen/mainPresenter.hpp>
+#include <gui/menu_screen/menuView.hpp>
+#include <gui/menu_screen/menuPresenter.hpp>
 
 using namespace touchgfx;
 
@@ -38,4 +40,17 @@ void FrontendApplicationBase::gotomainScreenNoTransition()
 void FrontendApplicationBase::gotomainScreenNoTransitionImpl()
 {
     touchgfx::makeTransition<mainView, mainPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
+// menu
+
+void FrontendApplicationBase::gotomenuScreenNoTransition()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplicationBase::gotomenuScreenNoTransitionImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotomenuScreenNoTransitionImpl()
+{
+    touchgfx::makeTransition<menuView, menuPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }
