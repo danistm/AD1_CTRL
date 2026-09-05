@@ -8,7 +8,7 @@
 
 #include <gui_generated/menu_screen/menuViewBase.hpp>
 #include <gui/menu_screen/menuPresenter.hpp>
-#include <gui/common/menu_settings.h>
+#include "menu_settings.h"
 
 class menuView : public menuViewBase
 {

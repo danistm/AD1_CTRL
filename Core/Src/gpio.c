@@ -55,7 +55,7 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, DISP_BL_EN_Pin|DISP_STBY_Pin|DISP_RST_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, DISP_STBY_Pin|DISP_RST_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOG, CLIP_4_Pin|CLIP_3_Pin|CLIP_2_Pin|CLIP_1_Pin
@@ -73,8 +73,8 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : DISP_BL_EN_Pin DISP_STBY_Pin DISP_RST_Pin */
-  GPIO_InitStruct.Pin = DISP_BL_EN_Pin|DISP_STBY_Pin|DISP_RST_Pin;
+  /*Configure GPIO pins : DISP_STBY_Pin DISP_RST_Pin */
+  GPIO_InitStruct.Pin = DISP_STBY_Pin|DISP_RST_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -126,9 +126,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(ADC_CLIP_GPIO_Port, &GPIO_InitStruct);
-
-  /*AnalogSwitch Config */
-  HAL_SYSCFG_AnalogSwitchConfig(SYSCFG_SWITCH_PA0, SYSCFG_SWITCH_PA0_CLOSE);
 
   /*AnalogSwitch Config */
   HAL_SYSCFG_AnalogSwitchConfig(SYSCFG_SWITCH_PA1, SYSCFG_SWITCH_PA1_CLOSE);

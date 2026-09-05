@@ -65,8 +65,8 @@ void Error_Handler(void);
 #define CPLD_F48_GPIO_Port GPIOF
 #define CPLD_F96_Pin GPIO_PIN_8
 #define CPLD_F96_GPIO_Port GPIOF
-#define DISP_BL_EN_Pin GPIO_PIN_0
-#define DISP_BL_EN_GPIO_Port GPIOA
+#define DISP_PWM_Pin GPIO_PIN_0
+#define DISP_PWM_GPIO_Port GPIOA
 #define DISP_STBY_Pin GPIO_PIN_1
 #define DISP_STBY_GPIO_Port GPIOA
 #define DISP_RST_Pin GPIO_PIN_2

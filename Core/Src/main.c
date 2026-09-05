@@ -31,13 +31,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "sai_metering.h"
+#include "settings_store.h"
+#include "backlight.h"
 #include "adc_es9843.h"
-//#define LCD_W  480
-//#define LCD_H  128   /* ST7282 vertical display period = 272 lines     */
-
-/* 480*272*2 = 261120 bytes, lands in AXI SRAM @0x24000000 (.bss)      */
-//static uint16_t fb[LCD_H][LCD_W] __attribute__((aligned(32)));
-
 
 extern LTDC_HandleTypeDef hltdc;
 
@@ -140,8 +136,6 @@ void LCD_BringUpTest(void)
   HAL_GPIO_WritePin(DISP_STBY_GPIO_Port, DISP_STBY_Pin, GPIO_PIN_SET);
   HAL_Delay(50);
 
-  /* --- backlight on: start whichever PWM drives the LED driver --- */
-  HAL_GPIO_WritePin(DISP_BL_EN_GPIO_Port, DISP_BL_EN_Pin, GPIO_PIN_SET);
 }
 
 /* USER CODE END 0 */
@@ -195,17 +189,26 @@ int main(void)
   MX_TIM3_Init();
   MX_I2C4_Init();
   MX_CRC_Init();
+  MX_TIM2_Init();
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
 
-  SAI_Metering_Start();
-
+  Settings_Load();
+  Backlight_Start();
+  Backlight_SetKey(g_settings.keyBright);
+  Backlight_SetDisplay(g_settings.dispBright);
   LCD_BringUpTest();
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 4000);
 
-  ES9843_Init();
+  uint8_t adcOK = (ES9843_Init() == HAL_OK);
+  if (adcOK)
+  {
+	  static const es9843_rate_t rateMap[3] = { ES9843_RATE_48K, ES9843_RATE_96K, ES9843_RATE_192K };
+	  if (g_settings.rateIdx != 0u) (void)ES9843_ChangeSampleRate(rateMap[g_settings.rateIdx]);
+	  (void)ES9843_SetStereoMode(g_settings.ch2On);
+	  (void)ES9843_SetFilter((es9843_filter_t)g_settings.filtIdx);
+  }
 
+  SAI_Metering_Start();
 
   /* USER CODE END 2 */
 

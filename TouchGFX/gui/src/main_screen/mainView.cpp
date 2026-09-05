@@ -1,5 +1,5 @@
 #include <gui/main_screen/mainView.hpp>
-#include <gui/common/menu_settings.h>
+#include "menu_settings.h"
 #include <cmath>
 #include "Keypadcontroller.hpp"
 #include <BitmapDatabase.hpp>
@@ -40,6 +40,9 @@ void mainView::setupScreen()
     }
     //applyMeterMode(false);            /* start in 4-channel mode        */
     applyMeterMode(g_settings.ch2On);
+    static const char* const rateStr[3] = { "48", "96", "192" };
+    Unicode::strncpy(txtRateBuffer, rateStr[g_settings.rateIdx], TXTRATE_SIZE);
+    txtRate.invalidate();
     setTopStatus(TOP_STREAMING);        /* evaluation default            */
     imgUsb.setVisible(true);            /* evaluation default            */
 }
