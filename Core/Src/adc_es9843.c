@@ -84,12 +84,20 @@ HAL_StatusTypeDef ES9843_Init(void)
     if (st != HAL_OK) return st;
     HAL_Delay(ES9843_RESET_DELAY_MS);
 
-    /* base configuration:
-     *  - clock in enabled, ACLK1, all 4 decimation paths on            */
-    st = ES9843_WriteReg(ES9843_REG_SYS_CONFIG,
-                         ES9843_EN_MCLK_IN |
-                         ES9843_EN_ADC_CH1 | ES9843_EN_ADC_CH2 |
-                         ES9843_EN_ADC_CH3 | ES9843_EN_ADC_CH4);
+    /* base configuration — channels stay DISABLED until the end,
+     * mirroring the datasheet power-up sequence (Figure 26):
+     *  - clock in enabled, ACLK1, decimation paths OFF for now         */
+    st = ES9843_WriteReg(ES9843_REG_SYS_CONFIG, ES9843_EN_MCLK_IN);
+    if (st != HAL_OK) return st;
+
+    /*  - AUTO_FS_DETECT stays ON (default): disabling it malforms the
+     *    master WS/data framing (bench, 2026-09-16) — the FS-detect
+     *    block is the encoder's FS reference even in master mode. The
+     *    front-end divider is still written per rate for documentation;
+     *    the stale-profile fix is the channel toggle around rate
+     *    changes, not manual divider control.                          */
+    st = ES9843_UpdateBits(ES9843_REG_FS_CONFIG, ES9843_AUTO_FS_DETECT,
+                           ES9843_AUTO_FS_DETECT);
     if (st != HAL_OK) return st;
 
     /*  - PCM master mode: chip generates BCK (DATA_CLK) and WS (DATA1);
@@ -98,10 +106,8 @@ HAL_StatusTypeDef ES9843_Init(void)
                            ES9843_PCM_MASTER_EN);
     if (st != HAL_OK) return st;
 
-    /*  - default rate 48 kHz (MASTER_DCLK_DIV reset value is already 7,
-     *    written explicitly so the init state is self-documenting)      */
-    st = ES9843_WriteReg(ES9843_REG_MASTER_CLK_DIV,
-                         (uint8_t)ES9843_RATE_48K);
+    /*  - default rate 48 kHz: both dividers (BCK/WS and MCLK_128FS)     */
+    st = ES9843_SetSampleRate(ES9843_RATE_48K);
     if (st != HAL_OK) return st;
 
     /*  - clock detection circuit on (WS/BCK monitors default on)       */
@@ -115,8 +121,9 @@ HAL_StatusTypeDef ES9843_Init(void)
                            ES9843_DC_BLOCK_EN_ALL);
     if (st != HAL_OK) return st;
 
-    /*  - overload flags CH1..CH4 feed the status OR; peak-det masked   */
-    st = ES9843_WriteReg(ES9843_REG_STATUS_MASK, ES9843_MASK_OVERLOAD_ALL);
+    /*  - status OR fully MASKED for now: the channel-enable transient
+     *    must not reach GPIO9. Unmasked as the very last step.         */
+    st = ES9843_WriteReg(ES9843_REG_STATUS_MASK, 0x00u);
     if (st != HAL_OK) return st;
 
     /*  - GPIO9 = OR of Status Bits (overload half of the IRQ line)    */
@@ -140,32 +147,57 @@ HAL_StatusTypeDef ES9843_Init(void)
                            ES9843_GPIO9_OE | ES9843_GPIO10_OE);
     if (st != HAL_OK) return st;
 
-    /*  - clear any stale latched flags                                 */
-    st = ES9843_ClearOverloadLatches();
+    /*  - LAST config step: enable the four decimation paths            */
+    st = ES9843_SetChannelsEnabled(true);
     if (st != HAL_OK) return st;
 
     /* post-init sanity: the TDM encoder must declare the configured
      * output interface valid (retry briefly while clocks settle).
      * TODO bench: confirm typical assertion delay after master enable. */
+    bool valid = false;
     for (uint8_t tries = 0u; tries < 10u; tries++)
     {
         uint8_t cv = 0u;
         if (ES9843_ReadReg(ES9843_REG_CODEC_VALIDITY, &cv) == HAL_OK &&
             (cv & ES9843_TDM_ENC_VALID) != 0u)
         {
-            return HAL_OK;
+            valid = true;
+            break;
         }
         HAL_Delay(5u);
     }
-    return HAL_ERROR;   /* interface config not accepted by the chip   */
+    if (!valid) return HAL_ERROR;   /* interface config not accepted   */
+
+    /* The decimation start-up transient trips the overload detectors.
+     * With the OR still masked nothing reached GPIO9; now that the paths
+     * are settled (> t_data_out): wipe the latches, THEN arm the OR.   */
+    HAL_Delay(10u);
+    st = ES9843_ClearOverloadLatches();
+    if (st != HAL_OK) return st;
+    return ES9843_WriteReg(ES9843_REG_STATUS_MASK, ES9843_MASK_OVERLOAD_ALL);
 }
 
 /* ------------------------------------------------------------------ */
 /* Product functions                                                   */
 /* ------------------------------------------------------------------ */
+HAL_StatusTypeDef ES9843_SetChannelsEnabled(bool en)
+{
+    const uint8_t all = ES9843_EN_ADC_CH1 | ES9843_EN_ADC_CH2 |
+                        ES9843_EN_ADC_CH3 | ES9843_EN_ADC_CH4;
+    return ES9843_UpdateBits(ES9843_REG_SYS_CONFIG, all, en ? all : 0u);
+}
+
 HAL_StatusTypeDef ES9843_SetSampleRate(es9843_rate_t rate)
 {
-    return ES9843_WriteReg(ES9843_REG_MASTER_CLK_DIV, (uint8_t)rate);
+    /* BCK = MCLK/(dclkDiv+1) = 64fs ; MCLK_128FS = MCLK/(feDiv+1) = 128fs
+     * -> feDiv + 1 = (dclkDiv + 1) / 2                                 */
+    const uint8_t dclkDiv = (uint8_t)rate;
+    const uint8_t feDiv   = (uint8_t)(((dclkDiv + 1u) / 2u) - 1u);
+
+    HAL_StatusTypeDef st = ES9843_WriteReg(ES9843_REG_MASTER_CLK_DIV, dclkDiv);
+    if (st != HAL_OK) return st;
+    return ES9843_UpdateBits(ES9843_REG_FRONTEND_CLK,
+                             ES9843_MCLK_128FS_DIV_MASK, feDiv);
 }
 
 HAL_StatusTypeDef ES9843_SetMuteAll(bool mute)
@@ -188,8 +220,22 @@ HAL_StatusTypeDef ES9843_ChangeSampleRate(es9843_rate_t rate)
     if (st != HAL_OK) return st;
     HAL_Delay(10u);                 /* let the volume ramp complete     */
 
-    st = ES9843_SetSampleRate(rate);
+    /* mask the status OR: the re-enable transient must not pulse GPIO9 */
+    (void)ES9843_WriteReg(ES9843_REG_STATUS_MASK, 0x00u);
+
+    /* decimation paths OFF: both clock paths are gated by the channel
+     * enables, so dividers written now are applied cleanly on re-enable */
+    st = ES9843_SetChannelsEnabled(false);
     if (st != HAL_OK) { (void)ES9843_SetMuteAll(false); return st; }
+
+    st = ES9843_SetSampleRate(rate);          /* BCK/WS + MCLK_128FS    */
+    if (st != HAL_OK) { (void)ES9843_SetChannelsEnabled(true);
+                        (void)ES9843_SetMuteAll(false); return st; }
+    HAL_Delay(2u);
+
+    st = ES9843_SetChannelsEnabled(true);     /* re-sync, LAST step     */
+    if (st != HAL_OK) { (void)ES9843_SetMuteAll(false); return st; }
+    HAL_Delay(5u);                            /* > t_data_out (~4.1 ms) */
 
     /* wait for the clock detector to revalidate the new geometry      */
     bool anomaly = true;
@@ -201,6 +247,12 @@ HAL_StatusTypeDef ES9843_ChangeSampleRate(es9843_rate_t rate)
     }
 
     HAL_Delay(5u);                  /* decimator settle margin          */
+
+    /* re-enabling the paths trips the overload detectors: wipe the
+     * transient latches while still masked, then re-arm the OR         */
+    (void)ES9843_ClearOverloadLatches();
+    (void)ES9843_WriteReg(ES9843_REG_STATUS_MASK, ES9843_MASK_OVERLOAD_ALL);
+
     st = ES9843_SetMuteAll(false);
     if (st != HAL_OK) return st;
 

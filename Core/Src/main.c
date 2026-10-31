@@ -69,55 +69,8 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#if 0
-static void LCD_FillTestPattern(void)
-{
-  /* RGB565: R, G, B, White, Yellow, Cyan, Magenta, Black */
-  static const uint16_t bars[8] = {
-    0xF800, 0x07E0, 0x001F, 0xFFFF, 0xFFE0, 0x07FF, 0xF81F, 0x0000
-  };
 
-  for (int y = 0; y < LCD_H; y++) {
-    for (int x = 0; x < LCD_W; x++) {
-      fb[y][x] = bars[x / 60];                 /* 8 bars x 60 px       */
-    }
-    /* left 8-px ruler: alternating 16-line white/black blocks         */
-    uint16_t ruler = ((y >> 4) & 1u) ? 0x0000 : 0xFFFF;
-    if (y < 16) ruler = 0xF800;   /* block 0 marked red */
-    for (int x = 0; x < 8; x++) {
-      fb[y][x] = ruler;
-    }
-  }
-
-  /* LTDC reads via AXI, bypassing D-cache: flush before display reads */
-  SCB_CleanDCache_by_Addr((uint32_t *)fb, sizeof(fb));
-}
-
-static void LCD_ConfigLayer(void)
-{
-  LTDC_LayerCfgTypeDef cfg = {0};
-
-  cfg.WindowX0       = 0;
-  cfg.WindowX1       = LCD_W;
-  cfg.WindowY0       = 0;
-  cfg.WindowY1       = LCD_H;      /* full 272 for bring-up            */
-  cfg.PixelFormat    = LTDC_PIXEL_FORMAT_RGB565;
-  cfg.FBStartAdress  = (uint32_t)fb;
-  cfg.ImageWidth     = LCD_W;
-  cfg.ImageHeight    = LCD_H;
-  cfg.Alpha          = 255;
-  cfg.Alpha0         = 0;
-  cfg.BlendingFactor1 = LTDC_BLENDING_FACTOR1_CA;
-  cfg.BlendingFactor2 = LTDC_BLENDING_FACTOR2_CA;
-  cfg.Backcolor.Red   = 0;
-  cfg.Backcolor.Green = 0;
-  cfg.Backcolor.Blue  = 0;
-
-  HAL_LTDC_ConfigLayer(&hltdc, &cfg, LTDC_LAYER_1);   /* layer index 0 */
-}
-#endif
-
-void LCD_BringUpTest(void)
+void LCD_Init(void)
 {
   /* --- panel reset (GRB, active low, on DISP_RST/PA2) --- */
   HAL_GPIO_WritePin(DISP_RST_GPIO_Port, DISP_RST_Pin, GPIO_PIN_RESET);
@@ -197,9 +150,10 @@ int main(void)
   Backlight_Start();
   Backlight_SetKey(g_settings.keyBright);
   Backlight_SetDisplay(g_settings.dispBright);
-  LCD_BringUpTest();
+  LCD_Init();
 
   uint8_t adcOK = (ES9843_Init() == HAL_OK);
+#if 0
   if (adcOK)
   {
 	  static const es9843_rate_t rateMap[3] = { ES9843_RATE_48K, ES9843_RATE_96K, ES9843_RATE_192K };
@@ -207,6 +161,7 @@ int main(void)
 	  (void)ES9843_SetStereoMode(g_settings.ch2On);
 	  (void)ES9843_SetFilter((es9843_filter_t)g_settings.filtIdx);
   }
+#endif
 
   SAI_Metering_Start();
 

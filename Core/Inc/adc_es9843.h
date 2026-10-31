@@ -39,6 +39,8 @@ extern "C" {
 #define   ES9843_MONO_MODE            (0x10u)
 #define   ES9843_AUTO_FS_DETECT       (0x01u)  /* default 1             */
 
+#define ES9843_REG_FRONTEND_CLK     (0x04u)  /* MCLK_128FS = MCLK/(v+1) */
+#define   ES9843_MCLK_128FS_DIV_MASK  (0x3Fu)
 #define ES9843_REG_BACKEND_CLK      (0x05u)
 #define   ES9843_MCLK_24M_DIV2        (0x10u)
 #define ES9843_REG_MASTER_CLK_DIV   (0x06u)  /* BCK = MCLK/(value+1)    */
@@ -179,12 +181,19 @@ typedef enum
 {
     ES9843_RATE_48K  = 7,   /* MASTER_DCLK_DIV values: BCK=MCLK/(v+1)  */
     ES9843_RATE_96K  = 3,   /* 24.576 MHz -> 64fs BCK per rate         */
-    ES9843_RATE_192K = 1
+    ES9843_RATE_192K = 1    /* MCLK_128FS_DIV derives as (v+1)/2-1     */
 } es9843_rate_t;
 
-/* Master-mode sample rate: reprograms the BCK/WS generation divider.
- * AUTO_FS_DETECT (default on) makes the decimator follow the new WS.
- * Raw divider write only — no muting. See ES9843_ChangeSampleRate().  */
+/* Enable/disable the four decimation paths (Reg 0[3:0]). Both
+ * decimation clock paths are gated by these bits: toggling them
+ * re-syncs the dividers. Channel enable is the LAST step of the
+ * datasheet power-up sequence and of every rate change.               */
+HAL_StatusTypeDef ES9843_SetChannelsEnabled(bool en);
+
+/* Raw rate programming: writes the master BCK/WS divider and the
+ * front-end MCLK_128FS divider (AUTO_FS_DETECT stays ON and overrides
+ * the latter; it is written for documentation/consistency). Call only
+ * with channels disabled; see ES9843_ChangeSampleRate().              */
 HAL_StatusTypeDef ES9843_SetSampleRate(es9843_rate_t rate);
 
 /* Pop-free rate change: ramped mute -> divider -> wait clock-valid ->
