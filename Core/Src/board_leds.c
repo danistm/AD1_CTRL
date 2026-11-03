@@ -1,14 +1,7 @@
-/*
- * board_leds.c
- *
- *  Created on: 14 Aug 2026
- *      Author: Delinea
- */
-
+/* board_leds.c — AD-1 CTL v2.0: CLIP_1..4 on PG6/PG5/PG4/PG3, active HIGH */
 #include "board_leds.h"
 #include "main.h"
 
-/* set to 1 if the LEDs are active-low (direct MCU sink drive) */
 #define CLIP_LED_ACTIVE_LOW  0
 
 void Board_SetClipLed(uint8_t ch, bool on)
@@ -18,9 +11,14 @@ void Board_SetClipLed(uint8_t ch, bool on)
     static const uint16_t pin[4] =
         { CLIP_1_Pin, CLIP_2_Pin, CLIP_3_Pin, CLIP_4_Pin };
 
-    if (ch >= 4) return;
+    if (ch >= 4u) return;
 #if CLIP_LED_ACTIVE_LOW
     on = !on;
 #endif
     HAL_GPIO_WritePin(port[ch], pin[ch], on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}
+
+void Board_AllClipLeds(bool on)
+{
+    for (uint8_t i = 0u; i < 4u; i++) Board_SetClipLed(i, on);
 }

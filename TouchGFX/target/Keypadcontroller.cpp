@@ -2,11 +2,11 @@
  * KeypadController.cpp — AD-1 CTL board
  *
  * sample() is polled by the TouchGFX HAL once per frame (~57 Hz here).
- * Edge detection produces one event per press; arrows auto-repeat while
- * held (initial delay then steady rate) for comfortable menu scrolling.
  *
- * Adjust the keyMap[] table to match your CubeMX pin labels and the
- * physical layout of KEY0..KEY4 on the front panel.
+ * Arrows: edge-triggered + auto-repeat while held.
+ * OK    : short press  -> Keys::Ok, emitted on RELEASE (below 1 s)
+ *         long  press  -> Keys::OkLong, emitted once at the 1 s mark
+ *                         (release after that emits nothing)
  */
 #include "KeypadController.hpp"
 
@@ -18,32 +18,33 @@ struct KeyPin
     bool          autorepeat;
 };
 
-/* KEY0..KEY4 from the schematic -> functions. FIX THE ORDER to match
- * which net goes to which physical button on your panel.               */
+/* Index 0..3 = arrows, index 4 MUST stay the OK key (short/long logic).
+ * v2.0 pinout (labels from CubeMX). VERIFY on the bench with the
+ * colored-squares test before trusting the arrow order.                */
 static const KeyPin keyMap[5] =
 {
     { UP_BTN_GPIO_Port, UP_BTN_Pin, Keys::Up,    true  },
     { DN_BTN_GPIO_Port, DN_BTN_Pin, Keys::Down,  true  },
-    { PR_BTN_GPIO_Port, PR_BTN_Pin, Keys::Left,  true  },
-    { FW_BTN_GPIO_Port, FW_BTN_Pin, Keys::Right, true  },
+    { PR_BTN_GPIO_Port, PR_BTN_Pin, Keys::Left,  true  },  /* "previous" */
+    { FW_BTN_GPIO_Port, FW_BTN_Pin, Keys::Right, true  },  /* "forward"  */
     { OK_BTN_GPIO_Port, OK_BTN_Pin, Keys::Ok,    false },
 };
 
-static const uint8_t OK_INDEX	= 4;
-static const uint8_t OK_BIT		= (1u << OK_INDEX);
+static const uint8_t  OK_INDEX = 4;
+static const uint8_t  OK_BIT   = (1u << OK_INDEX);
 
-/* Auto-repeat timing in frames (~17.5 ms each at 57 Hz)                */
-static const uint16_t REPEAT_DELAY 			= 28;	/* ~0.5 s before repeating    */
-static const uint16_t REPEAT_RATE  			= 6;	/* ~10 events/s while held    */
-static const uint16_t LONG_PRESS_TICKS		= 57;	/* ~1.0 s                	  */
+/* Timing in frames (~17.5 ms each at 57 Hz)                            */
+static const uint16_t REPEAT_DELAY     = 28;  /* ~0.5 s                 */
+static const uint16_t REPEAT_RATE      = 6;   /* ~10 events/s           */
+static const uint16_t LONG_PRESS_TICKS = 57;  /* ~1.0 s                 */
 
 void KeypadController::init()
 {
-    prevMask	= 0;
-    heldIndex	= -1;
-    heldTicks	= 0;
-    okTicks		= 0;
-    okLongSent	= false;
+    prevMask   = 0;
+    heldIndex  = -1;
+    heldTicks  = 0;
+    okTicks    = 0;
+    okLongSent = false;
 }
 
 bool KeypadController::sample(uint8_t& key)
@@ -103,7 +104,6 @@ bool KeypadController::sample(uint8_t& key)
         }
     }
 
-    /* Auto-repeat while the armed key stays down (and only that key)   */
     if (heldIndex >= 0)
     {
         if ((mask & ~OK_BIT) == (uint8_t)(1u << heldIndex))

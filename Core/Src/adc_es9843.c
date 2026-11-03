@@ -8,6 +8,8 @@
 #include "adc_es9843.h"
 #include "i2c.h"                 /* CubeMX: hi2c2 on PF0/PF1            */
 #include "main.h"                /* ADC_EN / ADC_CLIP pin labels        */
+#include "cpld_ctrl.h"
+#include "xmos_link.h"
 
 #define ES9843_I2C_HANDLE       (&hi2c2)
 #define ES9843_I2C_TIMEOUT_MS   (10u)
@@ -287,8 +289,13 @@ HAL_StatusTypeDef ES9843_SetStereoMode(bool on)
                                              on ? ES9843_STEREO_MODE : 0u);
     if (st != HAL_OK) return st;
 
-    /* ...and the MODE_2CH line to the CPLD follows the same command    */
-    return ES9843_SetGpio5Level(on);
+    /* ...the MODE_2CH line to the CPLD follows the same command...     */
+    st = ES9843_SetGpio5Level(on);
+    if (st != HAL_OK) return st;
+
+    /* ...and so does the XMOS flag: one command, three consumers       */
+    Xmos_Set2ChFlag(on);
+    return HAL_OK;
 }
 
 HAL_StatusTypeDef ES9843_SetGpio5Level(bool high)
@@ -443,11 +450,21 @@ HAL_StatusTypeDef ES9843_ClearOverloadLatches(void)
 /* ------------------------------------------------------------------ */
 void HAL_GPIO_EXTI_Callback(uint16_t pin)
 {
-    if (pin == ADC_CLIP_Pin)
+    /* v2.0: ADC overload on PD0 (EXTI0); CPLD lock on PD1 (EXTI1, both
+     * edges); XMOS ready on PG13 (EXTI13, both edges). This is the single
+     * project-wide EXTI dispatcher — other modules get called from here. */
+    if (pin == ADC_CLIP_EXTI0_Pin)
     {
         clipFlag = 1u;
     }
-    /* future EXTI sources dispatch from this same callback             */
+    else if (pin == CPLD_LOCK_Pin)
+    {
+        CPLD_OnLockEdge();
+    }
+    else if (pin == XMOS_RDY_Pin)
+    {
+        Xmos_OnReadyEdge();
+    }
 }
 
 bool ES9843_ClipConsume(void)

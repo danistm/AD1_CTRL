@@ -25,15 +25,22 @@
 #include "ltdc.h"
 #include "sai.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 #include "app_touchgfx.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include "debug_uart.h"
+#include "cpld_ctrl.h"
+#include "xmos_link.h"
+#include "osc_ctrl.h"
 #include "sai_metering.h"
 #include "settings_store.h"
 #include "backlight.h"
 #include "adc_es9843.h"
+#include "eeprom_24aa02.h"
 
 extern LTDC_HandleTypeDef hltdc;
 
@@ -57,6 +64,9 @@ extern LTDC_HandleTypeDef hltdc;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+#define FW_VERSION		"0.2b-step1"
+volatile bool g_adcOk	= false;
+volatile bool g_cpldOk	= false;
 
 /* USER CODE END PV */
 
@@ -143,28 +153,71 @@ int main(void)
   MX_I2C4_Init();
   MX_CRC_Init();
   MX_TIM2_Init();
+  MX_TIM4_Init();
+  MX_TIM5_Init();
+  MX_I2C3_Init();
+  MX_USART2_UART_Init();
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
 
-  Settings_Load();
+  /* --- console first: everything below logs --- */
+  DebugUart_Init();
+  DBG_Printf("\r\n=== AD-1 Hamstermatic Interface Processor v2.0  FW %s ===\r\n", FW_VERSION);
+  DBG_Printf("HSE bypass %s, SYSCLK %lu Hz\r\n",
+          (RCC->CR & RCC_CR_HSERDY) ? "locked" : "NOT READY",
+          (unsigned long)HAL_RCC_GetSysClockFreq());
+
+  /* --- CPLD held in reset + muted until clocks are valid --- */
+  CPLD_Reset(true);
+  CPLD_Mute(true);
+
+  /* --- settings (EEPROM on I2C1) --- */
+  {
+	  bool valid = Settings_Load();
+	  uint8_t id[8] = {0};
+	  bool eeOk = (EEPROM_ReadEUI64(id) == HAL_OK);
+	  DBG_Printf("EEPROM %s, settings %s, EUI-64 %02X%02X%02X%02X%02X%02X%02X%02X\r\n",
+                eeOk ? "ok" : "ABSENT", valid ? "loaded" : "DEFAULTS",
+                id[0],id[1],id[2],id[3],id[4],id[5],id[6],id[7]);
+  }
+
+  /* --- backlights restored before the panel lights --- */
   Backlight_Start();
   Backlight_SetKey(g_settings.keyBright);
   Backlight_SetDisplay(g_settings.dispBright);
   LCD_Init();
 
-  uint8_t adcOK = (ES9843_Init() == HAL_OK);
-#if 0
-  if (adcOK)
+  /* --- ADC: init at 48 kHz, then stored rate/mode/filter --- */
+  g_adcOk = (ES9843_Init() == HAL_OK);
+  DBG_Printf("ES9843 init %s\r\n", g_adcOk ? "OK" : "FAILED");
+  if (g_adcOk)
   {
-	  static const es9843_rate_t rateMap[3] = { ES9843_RATE_48K, ES9843_RATE_96K, ES9843_RATE_192K };
-	  if (g_settings.rateIdx != 0u) (void)ES9843_ChangeSampleRate(rateMap[g_settings.rateIdx]);
-	  (void)ES9843_SetStereoMode(g_settings.ch2On);
+	  static const es9843_rate_t rateMap[3] =
+	  { ES9843_RATE_48K, ES9843_RATE_96K, ES9843_RATE_192K };
+	  if (g_settings.rateIdx != 0u)
+		  (void)ES9843_ChangeSampleRate(rateMap[g_settings.rateIdx]);
+	  (void)ES9843_SetStereoMode(g_settings.ch2On);      /* ADC+CPLD+XMOS */
 	  (void)ES9843_SetFilter((es9843_filter_t)g_settings.filtIdx);
   }
-#endif
 
+  /* --- CPLD: release reset, wait for lock on the ADC's clocks --- */
+  CPLD_Reset(false);
+  g_cpldOk = CPLD_WaitLock(200u);
+  DBG_Printf("CPLD lock %s\r\n", g_cpldOk ? "OK" : "TIMEOUT");
+
+  /* --- metering, then unmute the AES/EBU path --- */
   SAI_Metering_Start();
+  if (g_cpldOk) CPLD_Mute(false);
 
+  /* --- provisioning probes (steps 2/4), log only --- */
+  {
+	  bool pca, dac;
+	  Osc_Probe(&pca, &dac);
+	  DBG_Printf("I2C3: PCA9536 %s, DAC8571 %s\r\n",
+			  	 pca ? "ACK" : "--", dac ? "ACK" : "--");
+  }
+  DBG_Printf("XMOS ready: %d\r\n", Xmos_Ready() ? 1 : 0);
+  DBG_Printf("boot done\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -205,7 +258,7 @@ void SystemClock_Config(void)
   * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 5;
