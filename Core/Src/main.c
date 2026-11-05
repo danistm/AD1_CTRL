@@ -155,7 +155,6 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM4_Init();
   MX_TIM5_Init();
-  MX_I2C3_Init();
   MX_USART2_UART_Init();
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
@@ -210,6 +209,7 @@ int main(void)
   if (g_cpldOk) CPLD_Mute(false);
 
   /* --- provisioning probes (steps 2/4), log only --- */
+  Osc_Init();
   {
 	  bool pca, dac;
 	  Osc_Probe(&pca, &dac);
