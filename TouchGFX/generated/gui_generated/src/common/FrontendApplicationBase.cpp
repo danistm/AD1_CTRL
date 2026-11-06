@@ -12,6 +12,8 @@
 #include <gui/main_screen/mainPresenter.hpp>
 #include <gui/menu_screen/menuView.hpp>
 #include <gui/menu_screen/menuPresenter.hpp>
+#include <gui/splash_screen/splashView.hpp>
+#include <gui/splash_screen/splashPresenter.hpp>
 
 using namespace touchgfx;
 
@@ -53,4 +55,17 @@ void FrontendApplicationBase::gotomenuScreenNoTransition()
 void FrontendApplicationBase::gotomenuScreenNoTransitionImpl()
 {
     touchgfx::makeTransition<menuView, menuPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
+// splash
+
+void FrontendApplicationBase::gotosplashScreenNoTransition()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplicationBase::gotosplashScreenNoTransitionImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotosplashScreenNoTransitionImpl()
+{
+    touchgfx::makeTransition<splashView, splashPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }

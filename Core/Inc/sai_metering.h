@@ -33,6 +33,9 @@ void SAI_Metering_Service(void);
 
 /* Diagnostics: count of SAI/DMA error callbacks since boot.            */
 uint32_t SAI_Metering_ErrorCount(void);
+/* Count of DMA half-buffers completed since boot: non-advancing while
+ * audio runs = no I2S clocks reaching the SAI (used by the boot check). */
+uint32_t SAI_Metering_ActivityCount(void);
 
 #ifdef __cplusplus
 }

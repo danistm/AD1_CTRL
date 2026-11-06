@@ -162,3 +162,8 @@ uint32_t SAI_Metering_ErrorCount(void)
 {
     return errCount;
 }
+
+uint32_t SAI_Metering_ActivityCount(void)
+{
+    return activity;        /* DMA half-buffers completed since boot  */
+}

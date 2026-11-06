@@ -64,7 +64,7 @@ extern LTDC_HandleTypeDef hltdc;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-#define FW_VERSION		"0.2b-step1"
+#define FW_VERSION		"0.2b-step1.1"
 volatile bool g_adcOk	= false;
 volatile bool g_cpldOk	= false;
 
@@ -166,9 +166,10 @@ int main(void)
           (RCC->CR & RCC_CR_HSERDY) ? "locked" : "NOT READY",
           (unsigned long)HAL_RCC_GetSysClockFreq());
 
-  /* --- CPLD held in reset + muted until clocks are valid --- */
+  /* safe state until the boot sequencer releases them               */
   CPLD_Reset(true);
   CPLD_Mute(true);
+  ES9843_SetEnabled(false);
 
   /* --- settings (EEPROM on I2C1) --- */
   {
@@ -186,38 +187,12 @@ int main(void)
   Backlight_SetDisplay(g_settings.dispBright);
   LCD_Init();
 
-  /* --- ADC: init at 48 kHz, then stored rate/mode/filter --- */
-  g_adcOk = (ES9843_Init() == HAL_OK);
-  DBG_Printf("ES9843 init %s\r\n", g_adcOk ? "OK" : "FAILED");
-  if (g_adcOk)
-  {
-	  static const es9843_rate_t rateMap[3] =
-	  { ES9843_RATE_48K, ES9843_RATE_96K, ES9843_RATE_192K };
-	  if (g_settings.rateIdx != 0u)
-		  (void)ES9843_ChangeSampleRate(rateMap[g_settings.rateIdx]);
-	  (void)ES9843_SetStereoMode(g_settings.ch2On);      /* ADC+CPLD+XMOS */
-	  (void)ES9843_SetFilter((es9843_filter_t)g_settings.filtIdx);
-  }
-
-  /* --- CPLD: release reset, wait for lock on the ADC's clocks --- */
-  CPLD_Reset(false);
-  g_cpldOk = CPLD_WaitLock(200u);
-  DBG_Printf("CPLD lock %s\r\n", g_cpldOk ? "OK" : "TIMEOUT");
-
-  /* --- metering, then unmute the AES/EBU path --- */
-  SAI_Metering_Start();
-  if (g_cpldOk) CPLD_Mute(false);
-
   /* --- provisioning probes (steps 2/4), log only --- */
   Osc_Init();
-  {
-	  bool pca, dac;
-	  Osc_Probe(&pca, &dac);
-	  DBG_Printf("I2C3: PCA9536 %s, DAC8571 %s\r\n",
-			  	 pca ? "ACK" : "--", dac ? "ACK" : "--");
-  }
-  DBG_Printf("XMOS ready: %d\r\n", Xmos_Ready() ? 1 : 0);
-  DBG_Printf("boot done\r\n");
+
+  /* -> TouchGFX starts the splash screen, which runs boot_seq.c:
+   *    ADC init/apply (muted) -> OSC probes -> CPLD release ->
+   *    SAI start -> CPLD lock -> I2S alive -> unmute -> main screen */
   /* USER CODE END 2 */
 
   /* Infinite loop */

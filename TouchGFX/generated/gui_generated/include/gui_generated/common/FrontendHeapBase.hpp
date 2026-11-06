@@ -16,6 +16,8 @@
 #include <gui/main_screen/mainPresenter.hpp>
 #include <gui/menu_screen/menuView.hpp>
 #include <gui/menu_screen/menuPresenter.hpp>
+#include <gui/splash_screen/splashView.hpp>
+#include <gui/splash_screen/splashPresenter.hpp>
 
 
 /**
@@ -40,7 +42,8 @@ public:
      */
     typedef touchgfx::meta::TypeList< mainView,
             touchgfx::meta::TypeList< menuView,
-            touchgfx::meta::Nil >
+            touchgfx::meta::TypeList< splashView,
+            touchgfx::meta::Nil > >
             > GeneratedViewTypes;
 
     /**
@@ -54,7 +57,8 @@ public:
      */
     typedef touchgfx::meta::TypeList< mainPresenter,
             touchgfx::meta::TypeList< menuPresenter,
-            touchgfx::meta::Nil >
+            touchgfx::meta::TypeList< splashPresenter,
+            touchgfx::meta::Nil > >
             > GeneratedPresenterTypes;
 
     /**
@@ -77,7 +81,7 @@ public:
 
     virtual void gotoStartScreen(FrontendApplication& app)
     {
-        app.gotomainScreenNoTransition();
+        app.gotosplashScreenNoTransition();
     }
 protected:
     FrontendHeapBase(touchgfx::AbstractPartition& presenters, touchgfx::AbstractPartition& views, touchgfx::AbstractPartition& transitions, FrontendApplication& app)

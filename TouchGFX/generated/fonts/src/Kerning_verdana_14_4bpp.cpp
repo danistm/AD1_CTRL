@@ -2,5 +2,6 @@
 
 FONT_KERNING_LOCATION_FLASH_PRAGMA
 KEEP extern const touchgfx::KerningNode kerning_verdana_14_4bpp[] FONT_KERNING_LOCATION_FLASH_ATTRIBUTE = {
-    { 0, 0 }
+    { 0x004C, -1 },  // (First char = [0x004C, L], Second char = [0x0054, T], Kerning dist = -1)
+    { 0x004C, -1 },  // (First char = [0x004C, L], Second char = [0x0059, Y], Kerning dist = -1)
 };

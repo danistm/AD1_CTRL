@@ -6,6 +6,12 @@
   <Texts>
     <TextGroup Id="Group1" />
     <TextGroup Id="Unsorted">
+      <Text Id="__SingleUse_V093" Alignment="Center" TypographyId="ERROR_14">
+        <Translation Language="GB">&lt;value&gt;</Translation>
+      </Text>
+      <Text Id="__SingleUse_2URD" Alignment="Center" TypographyId="Device">
+        <Translation Language="GB">AD-1</Translation>
+      </Text>
       <Text Id="__SingleUse_8T31" Alignment="Left" TypographyId="MENU_13">
         <Translation Language="GB">MIN PHASE</Translation>
       </Text>
@@ -67,7 +73,7 @@
     <Typography Id="Large" Font="verdana.ttf" Size="40" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" />
     <Typography Id="Small" Font="verdana.ttf" Size="10" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" />
     <Typography Id="Device" Font="EuropaOutline.ttf" Size="65" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" />
-    <Typography Id="ERROR_14" Font="verdana.ttf" Size="14" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WildcardCharacters="ADCPLXMOSIcer " />
+    <Typography Id="ERROR_14" Font="verdana.ttf" Size="14" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WildcardCharacters="ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789" />
     <Typography Id="RATE_46" Font="verdanab.ttf" Size="46" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WildcardCharacters="124689" />
     <Typography Id="MENU_13" Font="verdanab.ttf" Size="13" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WildcardCharacters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789. " />
   </Typographies>

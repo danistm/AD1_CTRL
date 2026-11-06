@@ -7,16 +7,18 @@
 #include <touchgfx/Bitmap.hpp>
 
 const uint16_t BITMAP_BAR_FRAME_ID = 0;
-const uint16_t BITMAP_CLIPART3048752_WHITE_120_ID = 1;
-const uint16_t BITMAP_ICON_2CH_CIRCLES_ID = 2;
-const uint16_t BITMAP_ICON_STREAM_A_ID = 3;
-const uint16_t BITMAP_ICON_USB_ID = 4;
-const uint16_t BITMAP_METER_BACKGROUND_2CH_ID = 5;
-const uint16_t BITMAP_METER_BACKGROUND_4CH_ID = 6;
-const uint16_t BITMAP_METER_BAR_DIM_22_ID = 7;
-const uint16_t BITMAP_METER_BAR_DIM_46_ID = 8;
-const uint16_t BITMAP_METER_BAR_LIT_22_ID = 9;
-const uint16_t BITMAP_METER_BAR_LIT_46_ID = 10;
+const uint16_t BITMAP_HAMSTER_LOGO_ORANGE_90PX_ID = 1;
+const uint16_t BITMAP_HAMSTER_LOGO_RED_X_90PX_ID = 2;
+const uint16_t BITMAP_ICON_2CH_CIRCLES_ID = 3;
+const uint16_t BITMAP_ICON_STREAM_A_ID = 4;
+const uint16_t BITMAP_ICON_USB_ID = 5;
+const uint16_t BITMAP_METER_BACKGROUND_2CH_ID = 6;
+const uint16_t BITMAP_METER_BACKGROUND_4CH_ID = 7;
+const uint16_t BITMAP_METER_BAR_DIM_22_ID = 8;
+const uint16_t BITMAP_METER_BAR_DIM_46_ID = 9;
+const uint16_t BITMAP_METER_BAR_LIT_22_ID = 10;
+const uint16_t BITMAP_METER_BAR_LIT_46_ID = 11;
+const uint16_t BITMAP_SPLASH_BAR_FRAME_ID = 12;
 
 namespace BitmapDatabase
 {

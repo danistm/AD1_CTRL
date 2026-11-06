@@ -524,6 +524,91 @@
             }
           }
         ]
+      },
+      {
+        "Name": "splash",
+        "Components": [
+          {
+            "Type": "Box",
+            "Name": "box1",
+            "Width": 480,
+            "Height": 128
+          },
+          {
+            "Type": "TextArea",
+            "Name": "txtTitle",
+            "X": 240,
+            "Y": 6,
+            "Width": 144,
+            "Height": 65,
+            "TextId": "__SingleUse_2URD",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "AutoSize": true
+          },
+          {
+            "Type": "Image",
+            "Name": "imgLogo",
+            "X": 58,
+            "Y": 26,
+            "Width": 99,
+            "Height": 90,
+            "RelativeFilename": "hamster-logo-orange-90px.png"
+          },
+          {
+            "Type": "BoxProgress",
+            "Name": "barBoot",
+            "X": 236,
+            "Y": 89,
+            "Width": 152,
+            "Height": 12,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Direction": "Right",
+            "FileNameBackground": "splash_bar_frame.png",
+            "IndicatorPositionWidth": 300,
+            "IndicatorPositionHeight": 12,
+            "ProgressRangeMax": 100
+          },
+          {
+            "Type": "TextArea",
+            "Name": "txtBootError",
+            "X": 222,
+            "Y": 86,
+            "Width": 181,
+            "Height": 18,
+            "Visible": false,
+            "TextId": "__SingleUse_V093",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 255,
+              "Green": 40,
+              "Blue": 40
+            },
+            "Wildcard1": {
+              "UseBuffer": true,
+              "BufferSize": 24
+            }
+          },
+          {
+            "Type": "Image",
+            "Name": "imgLogoError",
+            "X": 58,
+            "Y": 19,
+            "Width": 99,
+            "Height": 90,
+            "Visible": false,
+            "RelativeFilename": "hamster-logo-red-x-90px.png"
+          }
+        ],
+        "Interactions": []
       }
     ],
     "CustomContainerDefinitions": [],
@@ -533,7 +618,7 @@
       "Height": 128
     },
     "SelectedColorDepth": 16,
-    "StartupScreenName": "main",
+    "StartupScreenName": "splash",
     "SelectedStartupLanguage": "GB",
     "TouchGfxPath": "../Middlewares/ST/touchgfx",
     "UIPath": ".",
