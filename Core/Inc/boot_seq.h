@@ -36,7 +36,7 @@ extern "C" {
  * main screen comes up regardless (e.g. CTRL board alone on the bench,
  * no ADC/CPLD attached). Set to 0 for the product build.              */
 #ifndef BOOT_CHECKS_NONFATAL
-#define BOOT_CHECKS_NONFATAL   0
+#define BOOT_CHECKS_NONFATAL   1
 #endif
 
 typedef enum

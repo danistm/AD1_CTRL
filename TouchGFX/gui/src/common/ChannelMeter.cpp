@@ -107,14 +107,8 @@ void ChannelMeter::tick()
     }
     if (peakDb < dispDb) peakDb = dispDb;       /* peak never below bar */
 
-    /* --- clip latch --- */
-    if (!clipLatched && inputDb >= CLIP_THRESH_DB)
-    {
-        clipLatched = true;
-        clipBox.setColor(touchgfx::Color::getColorFromRGB(255, 0, 0));
-        clipBox.invalidate();
-        if (chIndex >= 0) Board_SetClipLed(chIndex, true);
-    }
+    /* --- clip latch (level path; the ADC flag comes via setClipExternal) --- */
+    if (inputDb >= CLIP_THRESH_DB) latchClip();
 
     /* --- push to widgets only when pixels changed --- */
     const int16_t lp = dbToPx(dispDb);
@@ -148,4 +142,18 @@ void ChannelMeter::clearClipLatch()
         clipBox.invalidate();
         if (chIndex >= 0) Board_SetClipLed(chIndex, false);
     }
+}
+
+void ChannelMeter::latchClip()
+{
+	if (clipLatched) return;
+	clipLatched = true;
+	clipBox.setColor(touchgfx::Color::getColorFromRGB(255, 0, 0));
+	clipBox.invalidate();
+	if (chIndex >= 0) Board_SetClipLed(chIndex, true);
+}
+
+void ChannelMeter::setClipExternal()
+{
+	latchClip();
 }

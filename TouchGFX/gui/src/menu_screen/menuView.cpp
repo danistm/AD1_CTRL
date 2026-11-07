@@ -9,6 +9,14 @@
  *   VALUE level: highlight moves to the value widget. Up/Down change
  *                the value (brightness applies IMMEDIATELY). LEFT returns
  *                to ITEM level.
+ *
+ * Step 1.2 — rate ownership:
+ *   While XMOS_RDY is high the USB host sets the sample rate. The RATE
+ *   row is drawn dimmed, shows the LIVE rate (what the host asked for),
+ *   is skipped by Up/Down and cannot be entered. If the lock changes
+ *   while the menu is open the row follows immediately. EXIT with a
+ *   changed rate while locked only stores the setting (it becomes the
+ *   stand-alone rate, applied when the USB host goes away).
  */
 #include <gui/menu_screen/menuView.hpp>
 #include <texts/TextKeysAndLanguages.hpp>
@@ -17,8 +25,9 @@
 #include "adc_es9843.h"
 #include "backlight.h"
 #include "settings_store.h"
+#include "rate_ctrl.h"
 
-static const char* const rateStr[3] = { "48 kHz", "96 kHz", "192 kHz" };
+static const char* const rateStr[7] = { "48 kHz", "96 kHz", "192 kHz" };
 static const char* const ch2Str[2]  = { "OFF", "ON" };
 static const char* const filtStr[8] =
 {
@@ -31,18 +40,28 @@ static const touchgfx::colortype COL_WHITE =
 static const touchgfx::colortype COL_BLACK =
         touchgfx::Color::getColorFromRGB(0, 0, 0);
 static const touchgfx::colortype COL_BLUE =
-		touchgfx::Color::getColorFromRGB(90, 170, 255);
+        touchgfx::Color::getColorFromRGB(90, 170, 255);
 static const touchgfx::colortype COL_ORANGE =
         touchgfx::Color::getColorFromRGB(255, 136, 0);
 static const touchgfx::colortype COL_GREEN =
-		touchgfx::Color::getColorFromRGB(70, 255, 3);
+        touchgfx::Color::getColorFromRGB(70, 255, 3);
+static const touchgfx::colortype COL_DIM =             /* locked row    */
+        touchgfx::Color::getColorFromRGB(100, 100, 100);
 
-menuView::menuView() : selected(IT_RATE), editing(false) {}
+menuView::menuView()
+    : selected(IT_RATE), editing(false), idleTicks(0u),
+      rateLocked(false), shownLiveIdx(0xFFu) {}
+
+bool menuView::itemLocked(uint8_t item) const
+{
+    return (item == IT_RATE) && rateLocked;
+}
 
 void menuView::setupScreen()
 {
     menuViewBase::setupScreen();
-    selected      = IT_RATE;
+    rateLocked    = RateCtl_XmosOwns();
+    selected      = rateLocked ? (uint8_t)IT_CH2 : (uint8_t)IT_RATE;
     editing       = false;
     idleTicks     = 0u;
     entrySettings = g_settings;      /* snapshot for cancel-on-timeout  */
@@ -58,6 +77,24 @@ void menuView::handleTickEvent()
         applyKeyBrightness(g_settings.keyBright);
         applyDisplayBrightness(g_settings.dispBright);
         application().gotomainScreenNoTransition();
+        return;
+    }
+
+    /* rate ownership can change while the menu is open                 */
+    const bool lock = RateCtl_XmosOwns();
+    if (lock != rateLocked)
+    {
+        rateLocked = lock;
+        if (lock && selected == IT_RATE)
+        {
+            editing  = false;            /* kicked out of the value level */
+            selected = IT_CH2;
+        }
+        updateVisuals();
+    }
+    else if (lock && RateCtl_LiveIdx() != shownLiveIdx)
+    {
+        updateVisuals();                 /* host changed rate: redraw    */
     }
 }
 
@@ -79,7 +116,7 @@ void menuView::handleKeyEvent(uint8_t key)
         case Keys::Up:    moveSelection(-1); break;
         case Keys::Down:  moveSelection(+1); break;
         case Keys::Right:
-            if (selected != IT_EXIT)
+            if (selected != IT_EXIT && !itemLocked(selected))
             {
                 editing = true;
                 updateVisuals();
@@ -111,7 +148,11 @@ void menuView::handleKeyEvent(uint8_t key)
 
 void menuView::moveSelection(int dir)
 {
-    selected = (uint8_t)((selected + IT_COUNT + dir) % IT_COUNT);
+    /* skip locked rows (at most one, so this always terminates)        */
+    do
+    {
+        selected = (uint8_t)((selected + IT_COUNT + dir) % IT_COUNT);
+    } while (itemLocked(selected));
     updateVisuals();
 }
 
@@ -120,6 +161,7 @@ void menuView::changeValue(int dir)
     switch (selected)
     {
     case IT_RATE:
+        if (rateLocked) break;           /* cannot happen, belt and braces */
         g_settings.rateIdx = (uint8_t)((g_settings.rateIdx + 3 + dir) % 3);
         break;
     case IT_CH2:
@@ -145,12 +187,9 @@ void menuView::changeValue(int dir)
 
 void menuView::applyAndExit()
 {
-    static const es9843_rate_t rateMap[3] =
-        { ES9843_RATE_48K, ES9843_RATE_96K, ES9843_RATE_192K };
-
     /* only touch the ADC for values that actually changed              */
     if (g_settings.rateIdx != entrySettings.rateIdx)
-        (void)ES9843_ChangeSampleRate(rateMap[g_settings.rateIdx]);
+        (void)RateCtl_ApplyUser();   /* no-op (stored only) if USB owns  */
     if (g_settings.ch2On != entrySettings.ch2On)
         (void)ES9843_SetStereoMode(g_settings.ch2On);
     if (g_settings.filtIdx != entrySettings.filtIdx)
@@ -181,6 +220,11 @@ void menuView::updateVisuals()
         rows[i].sel->setVisible(hi);
         rows[i].lbl->setColor(hi ? COL_BLACK : COL_WHITE);
     }
+    if (rateLocked)                      /* dimmed, never highlighted   */
+    {
+        boxSelRate.setVisible(false);
+        lblRate.setColor(COL_DIM);
+    }
 
     /* ---- value highlight (VALUE level) ---- */
     const bool edRate = editing && selected == IT_RATE;
@@ -190,7 +234,7 @@ void menuView::updateVisuals()
     const bool edDisB = editing && selected == IT_DISPB;
 
     boxValRate.setVisible(edRate);
-    valRate.setColor(edRate ? COL_BLACK : COL_BLUE);
+    valRate.setColor(rateLocked ? COL_DIM : (edRate ? COL_BLACK : COL_BLUE));
     boxValCh2.setVisible(edCh2);
     valCh2.setColor(edCh2 ? COL_BLACK : COL_ORANGE);
     boxValFilt.setVisible(edFilt);
@@ -199,8 +243,10 @@ void menuView::updateVisuals()
     boxValDispB.setVisible(edDisB);
 
     /* ---- values ---- */
-    Unicode::strncpy(valRateBuffer, rateStr[g_settings.rateIdx],
-                     VALRATE_SIZE);
+    /* locked: show what the host runs; unlocked: the user's setting    */
+    shownLiveIdx = RateCtl_LiveIdx();
+    const uint8_t rateShown = rateLocked ? shownLiveIdx : g_settings.rateIdx;
+    Unicode::strncpy(valRateBuffer, rateStr[rateShown], VALRATE_SIZE);
     Unicode::strncpy(valCh2Buffer, ch2Str[g_settings.ch2On ? 1 : 0],
                      VALCH2_SIZE);
     Unicode::strncpy(valFiltBuffer, filtStr[g_settings.filtIdx],

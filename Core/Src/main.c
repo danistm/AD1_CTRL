@@ -41,6 +41,7 @@
 #include "backlight.h"
 #include "adc_es9843.h"
 #include "eeprom_24aa02.h"
+#include "rate_ctrl.h"
 
 extern LTDC_HandleTypeDef hltdc;
 
@@ -64,7 +65,7 @@ extern LTDC_HandleTypeDef hltdc;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-#define FW_VERSION		"0.2b-step1.1"
+#define FW_VERSION		"0.2b-step1.2"
 volatile bool g_adcOk	= false;
 volatile bool g_cpldOk	= false;
 
@@ -188,7 +189,12 @@ int main(void)
   LCD_Init();
 
   /* --- provisioning probes (steps 2/4), log only --- */
-  Osc_Init();
+  Osc_Init();												/* bit-bang bus up + recovery, fast     */
+
+  RateCtl_Init();											/* live rate = stored setting (no HW)   */
+  Xmos_LinkInit();											/* I2C4 slave 0x42 starts listening now,
+                                   	   	   	   	   	   	   	   so a packet sent during the splash is
+                                   	   	   	   	   	   	   	   kept and applied when boot finishes  */
 
   /* -> TouchGFX starts the splash screen, which runs boot_seq.c:
    *    ADC init/apply (muted) -> OSC probes -> CPLD release ->

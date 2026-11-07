@@ -22,8 +22,15 @@ protected:
 private:
     ChannelMeter meters[4];
     bool stereoMode = false;
-    TopStatus topStatus = TOP_STREAMING;
-    bool errorTest = false;
+    TopStatus topStatus = TOP_IDLE;
+    //bool errorTest = false;
+
+    bool shownUsb = false;
+    bool shownStream = false;
+    uint8_t shownRateIdx = 0xFF;
+    void refreshLink();
+    void showRate(uint8_t idx);
+
 };
 
 #endif // MAINVIEW_HPP

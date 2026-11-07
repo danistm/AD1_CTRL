@@ -39,6 +39,7 @@ public:
     void setup(bool tall);
 
     void setInputDb(float dbfs);   /* latest block peak, any rate       */
+    void setClipExternal();		   /* latch from the ADC overload flag	*/
     void tick();                   /* once per frame                    */
     void clearClipLatch();
     bool isClipLatched() const { return clipLatched; }
@@ -61,6 +62,8 @@ private:
     int16_t  lastLevelPx;
     int16_t  lastPeakPx;
     int8_t 	 chIndex;
+
+    void latchClip();
 };
 
 

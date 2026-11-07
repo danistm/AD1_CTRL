@@ -1,15 +1,15 @@
 #include <gui/main_screen/mainView.hpp>
 #include "menu_settings.h"
 #include <cmath>
-#include "Keypadcontroller.hpp"
+#include "KeypadController.hpp"
 #include <BitmapDatabase.hpp>
 #include "board_leds.h"
 #include <texts/TextKeysAndLanguages.hpp>
 #include "sai_metering.h"
-
-#define METER_TEST_AUTOSWEEP 1
-
-volatile float g_testDb[4] = { -60.0f, -60.0f, -60.0f, -60.0f };
+#include "cpld_ctrl.h"
+#include "xmos_link.h"
+#include "rate_ctrl.h"
+#include "adc_es9843.h"
 
 mainView::mainView()
 {
@@ -30,6 +30,37 @@ void mainView::setTopStatus(TopStatus s, const char* errText)
     txtError.invalidate();
 }
 
+void mainView::showRate(uint8_t idx)
+{
+	Unicode::snprintf(txtRateBuffer, TXTRATE_SIZE, "%d", RateCtl_IdxToKhz(idx));
+	txtRate.invalidate();
+	shownRateIdx = idx;
+}
+
+void mainView::refreshLink()
+{
+	const bool usb = Xmos_Ready();
+	if (usb != shownUsb)
+	{
+		shownUsb = usb;
+		imgUsb.setVisible(usb);
+		imgUsb.invalidate();
+	}
+
+	const bool str = Xmos_Streaming();
+	if (str != shownStream)
+	{
+		shownStream = str;
+		if (topStatus != TOP_ERROR)
+		{
+			setTopStatus(str ? TOP_STREAMING : TOP_IDLE);
+		}
+	}
+
+	const uint8_t li = RateCtl_LiveIdx();
+	if (li != shownRateIdx) showRate(li);
+}
+
 void mainView::setupScreen()
 {
     mainViewBase::setupScreen();
@@ -38,13 +69,15 @@ void mainView::setupScreen()
     	add(meters[i]);
     	meters[i].setChannelIndex(i);
     }
-    //applyMeterMode(false);            /* start in 4-channel mode        */
     applyMeterMode(g_settings.ch2On);
-    static const char* const rateStr[3] = { "48", "96", "192" };
-    Unicode::strncpy(txtRateBuffer, rateStr[g_settings.rateIdx], TXTRATE_SIZE);
-    txtRate.invalidate();
-    setTopStatus(TOP_STREAMING);        /* evaluation default            */
-    imgUsb.setVisible(true);            /* evaluation default            */
+
+    shownUsb = Xmos_Ready();
+    imgUsb.setVisible(shownUsb);
+    imgUsb.invalidate();
+    shownStream = Xmos_Streaming();
+    setTopStatus(shownStream ? TOP_STREAMING : TOP_IDLE);
+    shownRateIdx = 0xFFu;
+    refreshLink();
 }
 
 void mainView::tearDownScreen()
@@ -79,24 +112,9 @@ void mainView::applyMeterMode(bool stereo)
 
 void mainView::handleTickEvent()
 {
-#if 0
-	#if METER_TEST_AUTOSWEEP
-    static uint32_t t = 0;
-    t++;
-    g_testDb[0] = -30.0f + 30.0f * sinf(t * 0.045f);        /* full swing */
-    g_testDb[1] = -24.0f + 10.0f * sinf(t * 0.020f + 1.f);  /* gentle     */
-    g_testDb[2] = ((t / 120) % 2) ? -3.0f : -50.0f;         /* steps+clip
-                                                               (hits -3;
-                                                               raise to
-                                                               0 to test
-                                                               latch)    */
-    g_testDb[3] = -18.0f;                                   /* static     */
-#endif
-#endif
-
     float db[4];
     SAI_Metering_GetPeaksDb(db);
-    SAI_Metering_Service();
+
     const int n = stereoMode ? 2 : 4;
     for (int i = 0; i < n; i++)
     {
@@ -104,7 +122,43 @@ void mainView::handleTickEvent()
         meters[i].tick();
     }
 
-    /* keep your existing key-test box timer code here if still present */
+    if (ES9843_ClipConsume())
+    {
+        es9843_errors_t e;
+        if (ES9843_PollErrors(&e) == HAL_OK)
+        {
+            for (int i = 0; i < n; i++)
+                if (e.overload & (1u << i)) meters[i].setClipExternal();
+            if (e.clock_anomaly) setTopStatus(TOP_ERROR, "ADC err");
+        }
+        else
+        {
+            setTopStatus(TOP_ERROR, "ADC err");       /* comms_fail */
+        }
+    }
+
+    /* CPLD lock (EXTI1, both edges): loss -> error + mute; re-lock -> clear */
+    {
+        bool locked;
+        if (CPLD_LockChanged(&locked))
+        {
+            if (locked)
+            {
+                CPLD_Mute(false);
+                if (topStatus == TOP_ERROR)           /* back to icon state */
+                    setTopStatus(shownStream ? TOP_STREAMING : TOP_IDLE);
+            }
+            else
+            {
+                CPLD_Mute(true);
+                setTopStatus(TOP_ERROR, "CPLD err");
+            }
+        }
+    }
+
+    refreshLink();                 /* USB icon, STREAM icon, rate digits */
+
+    SAI_Metering_Service();		   /* stall watchdog, as before          */
 }
 
 void mainView::handleKeyEvent(uint8_t key)
@@ -112,26 +166,9 @@ void mainView::handleKeyEvent(uint8_t key)
 
 	mainViewBase::handleKeyEvent(key);
 
-	switch(key)
+	if (key == Keys::Ok)
 	{
-	case Keys::Left:
-		applyMeterMode(!stereoMode);
-		break;
-
-	case Keys::Ok:
-		for (int i = 0 ; i < 4 ; i++)
-		{
-			meters[i].clearClipLatch();
-		}
-		break;
-
-	case Keys::Right:						/* Test! Toggle error display */
-		errorTest = !errorTest;
-		if (errorTest) setTopStatus(TOP_ERROR, "ADC err");
-		else setTopStatus(TOP_STREAMING);
-		break;
-
-	default:
-		break;
+	    for (int i = 0; i < 4; i++)
+	       meters[i].clearClipLatch();
 	}
 }

@@ -1,7 +1,10 @@
 /*
  * menuView.hpp — AD-1 CTL settings menu (5-key navigation)
  * Location: TouchGFX/gui/include/gui/menu_screen/
- * (adjust include of the generated base to your screen name)
+ *
+ * Step 1.2: the RATE item is locked (dimmed, skipped by Up/Down, not
+ * enterable) while the USB host owns the sample rate (XMOS_RDY high).
+ * The lock follows the line live while the menu is open.
  */
 #ifndef MENUVIEW_HPP
 #define MENUVIEW_HPP
@@ -37,12 +40,16 @@ private:
     uint16_t     idleTicks;
     MenuSettings entrySettings;   /* snapshot for revert-on-timeout     */
 
+    /* step 1.2: rate ownership                                          */
+    bool    rateLocked;      /* USB host owns the rate (XMOS_RDY high)   */
+    uint8_t shownLiveIdx;    /* live rate last drawn while locked        */
+    bool    itemLocked(uint8_t item) const;
+
     void moveSelection(int dir);
     void changeValue(int dir);
     void applyAndExit();
     void updateVisuals();
 
-    /* brightness stubs — wire the PWM CCR writes here later            */
     static void applyKeyBrightness(uint8_t level10);
     static void applyDisplayBrightness(uint8_t level10);
 };

@@ -1,5 +1,5 @@
 /*
- * boot_seq.c — AD-1 CTL v2.0 step 1.1 (rev 2: settle-aware schedule)
+ * boot_seq.c — AD-1 CTL v2.0 step 1.2 (1.1 rev 2 + RateCtl_Arm at finish)
  *
  * Why the ADC is not touched before ~1 s:
  *  - AVCC comes from an LT3045 with R_SET ~45 k and C_SET >= 10 uF ->
@@ -23,6 +23,7 @@
 #include "xmos_link.h"
 #include "osc_ctrl.h"
 #include "sai_metering.h"
+#include "rate_ctrl.h"
 
 /* absolute times, ms after Boot_Begin()                                */
 #define T_ADC_EN           1000u   /* assert CHIP_EN (rails >~97 %)     */
@@ -211,6 +212,7 @@ boot_state_t Boot_Tick(void)
         (void)ES9843_SetMuteAll(false);        /* release the audio path */
         CPLD_Mute(false);
         DBG_Printf("USB host: %s\r\n", Xmos_Ready() ? "connected" : "absent");
+        RateCtl_Arm();        /* step 1.2: XMOS may now set the rate   */
 #if BOOT_CHECKS_NONFATAL
         if (failCount)
             DBG_Printf("*** DEV BUILD: %u boot check(s) failed, continuing ***\r\n",
